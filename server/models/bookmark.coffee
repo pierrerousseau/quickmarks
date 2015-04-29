@@ -3,7 +3,7 @@ americano = require 'americano-cozy'
 module.exports = Bookmark = americano.getModel 'Bookmark',
     'title': type: String
     'url': type: String
-    'tags': type: String
+    'tags': type: JSON
     'description': type: String
     'created': type: Date, default: Date
 

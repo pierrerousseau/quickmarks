@@ -8,4 +8,39 @@ port = process.env.PORT || 31435;
 americano.start({
   name: 'Bookmark',
   port: port
+}, function(err, app, server) {
+  var Bookmark;
+  Bookmark = americano.getModel('Bookmark', {
+    'title': {
+      type: String
+    },
+    'url': {
+      type: String
+    },
+    'tags': {
+      type: JSON
+    },
+    'description': {
+      type: String
+    },
+    'created': {
+      type: Date,
+      "default": Date
+    }
+  });
+  return Bookmark.request("all", function(err, bookmarks) {
+    var bookmark, tags, _i, _len, _results;
+    _results = [];
+    for (_i = 0, _len = bookmarks.length; _i < _len; _i++) {
+      bookmark = bookmarks[_i];
+      if (typeof bookmark.tags === "string") {
+        tags = bookmark.tags.split(",");
+        bookmark.tags = tags;
+        _results.push(bookmark.save());
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  });
 });
