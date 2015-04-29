@@ -627,7 +627,7 @@ textarea {
   max-width: none;
 }
 #bookmarks-list .bookmark .all {
-  max-width: 95%;
+  width: 95%;
   white-space: nowrap;
 }
 #bookmarks-list .bookmark .url {
