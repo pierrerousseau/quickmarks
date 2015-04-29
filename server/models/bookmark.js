@@ -11,7 +11,7 @@ module.exports = Bookmark = americano.getModel('Bookmark', {
     type: String
   },
   'tags': {
-    type: String
+    type: JSON
   },
   'description': {
     type: String
