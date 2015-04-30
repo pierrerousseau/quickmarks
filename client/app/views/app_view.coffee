@@ -26,6 +26,8 @@ module.exports = class AppView extends View
     tagClick: (evt) ->
         tag = $(evt.currentTarget).text()
         $("input.search").val(tag)
+        window.featureList.search(tag)
+
 
     setTagCloud: ->
         allTags = {}

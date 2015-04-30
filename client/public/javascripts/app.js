@@ -538,7 +538,8 @@ module.exports = AppView = (function(superClass) {
   AppView.prototype.tagClick = function(evt) {
     var tag;
     tag = $(evt.currentTarget).text();
-    return $("input.search").val(tag);
+    $("input.search").val(tag);
+    return window.featureList.search(tag);
   };
 
   AppView.prototype.setTagCloud = function() {
