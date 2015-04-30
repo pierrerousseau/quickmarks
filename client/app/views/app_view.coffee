@@ -75,6 +75,9 @@ module.exports = class AppView extends View
             @bookmarksView.collection.create bookmark,
                 success: =>
                     @cleanForm()
+                    $("form .title").click()
+                    $(".bookmark:first").addClass "new"
+                    console.log($(".bookmark:first"))
                     alertify.log "" + (title || url) + " added"
                 error: =>
                     alertify.alert "Server error occured, " +

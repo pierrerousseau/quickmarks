@@ -6,6 +6,8 @@ module.exports = class BookmarkView extends View
 
     events:
         "click .delete": "deleteBookmark"
+        "mouseenter .delete": "setToDelete"
+        "mouseleave .delete": "setToNotDelete"
 
     constructor: (@model) ->
         super()
@@ -17,6 +19,12 @@ module.exports = class BookmarkView extends View
     render: () ->
         @model.cleanValues()
         super()
+
+    setToDelete: ->
+        @$el.addClass("to-delete")
+
+    setToNotDelete: ->
+        @$el.removeClass("to-delete")
 
     deleteBookmark: ->
         title = @$el.find(".title").html()

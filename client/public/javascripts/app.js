@@ -537,6 +537,9 @@ module.exports = AppView = (function(superClass) {
         success: (function(_this) {
           return function() {
             _this.cleanForm();
+            $("form .title").click();
+            $(".bookmark:first").addClass("new");
+            console.log($(".bookmark:first"));
             return alertify.log("" + (title || url) + " added");
           };
         })(this),
@@ -658,7 +661,9 @@ module.exports = BookmarkView = (function(superClass) {
   BookmarkView.prototype.tagName = "li";
 
   BookmarkView.prototype.events = {
-    "click .delete": "deleteBookmark"
+    "click .delete": "deleteBookmark",
+    "mouseenter .delete": "setToDelete",
+    "mouseleave .delete": "setToNotDelete"
   };
 
   function BookmarkView(model) {
@@ -675,6 +680,14 @@ module.exports = BookmarkView = (function(superClass) {
   BookmarkView.prototype.render = function() {
     this.model.cleanValues();
     return BookmarkView.__super__.render.call(this);
+  };
+
+  BookmarkView.prototype.setToDelete = function() {
+    return this.$el.addClass("to-delete");
+  };
+
+  BookmarkView.prototype.setToNotDelete = function() {
+    return this.$el.removeClass("to-delete");
   };
 
   BookmarkView.prototype.deleteBookmark = function() {
@@ -779,14 +792,18 @@ buf.push(attrs({ 'href':("" + (model.httpUrl) + ""), 'target':("_blank") }, {"hr
 buf.push('>' + escape((interp = model.url) == null ? '' : interp) + '</a></div>');
 }
 buf.push('</div>');
-if ( model.description || model.tags.length)
+if ( model.description || model.readableTags)
 {
 buf.push('<div class="description"> ');
-if ( model.tags.length)
+if ( model.readableTags)
 {
-buf.push('<div class="tags">tags: <span>' + escape((interp = model.readableTags) == null ? '' : interp) + '</span></div>');
+buf.push('<div class="tags">aa<span>' + escape((interp = model.readableTags) == null ? '' : interp) + '</span></div>');
 }
-buf.push('<p>' + escape((interp = model.description) == null ? '' : interp) + '</p></div>');
+if ( model.description)
+{
+buf.push('<p>' + escape((interp = model.description) == null ? '' : interp) + '</p>');
+}
+buf.push('</div>');
 }
 }
 return buf.join("");

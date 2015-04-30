@@ -12,9 +12,10 @@
     else
         .title.full
             a(href="#{model.httpUrl}", target="_blank") #{model.url}
-if model.description || model.tags.length
+if model.description || model.readableTags
     .description 
-        if model.tags.length
-            .tags tags: 
+        if model.readableTags
+            .tags aa
                 span #{model.readableTags}
-        p #{model.description}
+        if model.description
+            p #{model.description}

@@ -600,6 +600,26 @@ textarea {
   background: transparent;
   border: none;
 }
+#bookmarks-list .bookmark.new {
+  background-color: #4863a0;
+  color: #a18648;
+}
+#bookmarks-list .bookmark.new :visited {
+  color: #a18648;
+}
+#bookmarks-list .bookmark:hover {
+  background-color: #333;
+}
+#bookmarks-list .bookmark:hover .delete {
+  visibility: visible;
+}
+#bookmarks-list .bookmark.to-delete {
+  background-color: #a75d59;
+  color: #59f2f7;
+}
+#bookmarks-list .bookmark.to-delete :visited {
+  color: #59f2f7;
+}
 #bookmarks-list .bookmark .delete {
   background: transparent;
   color: #d9534f;
@@ -610,9 +630,6 @@ textarea {
 }
 #bookmarks-list .bookmark .delete div {
   vertical-align: initial;
-}
-#bookmarks-list .bookmark:hover .delete {
-  visibility: visible;
 }
 #bookmarks-list .bookmark div {
   display: inline-block;
@@ -658,7 +675,12 @@ textarea {
   filter: alpha(opacity=50);
 }
 #bookmarks-list .bookmark .description .tags {
+  margin-left: 0;
   margin-bottom: 0.5em;
+  width: 100%;
+  opacity: 0.6;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
+  filter: alpha(opacity=60);
 }
 .alertify-dialog,
 .alertify-buttons,
