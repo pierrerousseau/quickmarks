@@ -12,8 +12,8 @@ module.exports = class AppView extends View
         "click form .url-field": "showForm"
         "click form .title": "toggleForm"
         "click form .clean": "cleanForm"
-        "click .import": "import"
-        "click .export": "export"
+        "click button.import": "import"
+        "click button.export": "export"
         "change #bookmarks-file": "uploadFile"
 
     template: ->
@@ -133,10 +133,9 @@ module.exports = class AppView extends View
         reader.readAsText(file)
 
     import: (evt) ->
-        View.error "Import html bookmarks file exported by " +
-                   "firefox or chrome",
-            (ok) -> if ok
-                $("#bookmarks-file").click()
+        View.confirm "Import html bookmarks file exported by " +
+                     "firefox or chrome",
+            () -> $("#bookmarks-file").click()
 
     export: (evt) ->
         window.location = "export"

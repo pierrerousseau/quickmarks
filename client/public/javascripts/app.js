@@ -502,8 +502,8 @@ module.exports = AppView = (function(superClass) {
     "click form .url-field": "showForm",
     "click form .title": "toggleForm",
     "click form .clean": "cleanForm",
-    "click .import": "import",
-    "click .export": "export",
+    "click button.import": "import",
+    "click button.export": "export",
     "change #bookmarks-file": "uploadFile"
   };
 
@@ -677,10 +677,8 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype["import"] = function(evt) {
-    return View.error("Import html bookmarks file exported by " + "firefox or chrome", function(ok) {
-      if (ok) {
-        return $("#bookmarks-file").click();
-      }
+    return View.confirm("Import html bookmarks file exported by " + "firefox or chrome", function() {
+      return $("#bookmarks-file").click();
     });
   };
 
