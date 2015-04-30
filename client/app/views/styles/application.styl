@@ -11,6 +11,10 @@
 
 main-color   = #bbb
 danger-color = #d9534f
+new-back     = #4863a0
+new-color    = #a18648
+delete-back  = #a75d59
+delete-color = #59f2f7
 
 body.application, input, textarea
     color: main-color;
@@ -105,6 +109,20 @@ body.application, input, textarea
             background: transparent
             border: none
     .bookmark
+        &.new
+            background-color: new-back
+            color: new-color
+            :visited
+                color: new-color
+        &:hover
+            background-color: #333
+            .delete
+                visibility: visible
+        &.to-delete
+            background-color: delete-back
+            color: delete-color
+            :visited
+                color: delete-color
         .delete
             background: transparent
             color: danger-color
@@ -114,9 +132,6 @@ body.application, input, textarea
             padding: 0.1em
             div
                 vertical-align: initial
-        &:hover
-            .delete
-                visibility: visible
         div
             display: inline-block
             margin: 0 0 0 .5em
@@ -142,7 +157,10 @@ body.application, input, textarea
                 max-width: none
         .description
             .tags
+                margin-left: 0
                 margin-bottom: .5em
+                width: 100%
+                opacity: .6
             display: block
             margin: .5em 4em
             color: #eee
