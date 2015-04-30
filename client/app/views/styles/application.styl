@@ -15,6 +15,7 @@ new-back     = #4863a0
 new-color    = #a18648
 delete-back  = #a75d59
 delete-color = #59f2f7
+tag-color    = #a18648
 
 body.application, input, textarea
     color: main-color;
@@ -168,3 +169,13 @@ body.application, input, textarea
             background: #262626
             padding: .5em
             opacity: 0.5
+ 
+#tags-cloud
+    margin-left: 5em
+    height: auto
+    text-align: center
+    span 
+        padding: .1em
+        cursor: pointer
+        &:hover
+            color: tag-color

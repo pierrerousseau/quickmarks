@@ -15,12 +15,42 @@ module.exports = class AppView extends View
         "click button.import": "import"
         "click button.export": "export"
         "change #bookmarks-file": "uploadFile"
+        "click .tag": "tagClick"
 
     template: ->
         require "./templates/home"
 
     initialize: ->
         @router = CozyApp.Routers.AppRouter = new AppRouter()
+
+    tagClick: (evt) ->
+        tag = $(evt.currentTarget).text()
+        $("input.search").val(tag)
+
+    setTagCloud: ->
+        allTags = {}
+        nbTags = 0
+        @bookmarksView.collection.forEach((bookmark) ->
+            (bookmark.get "tags").forEach((tag) ->
+                if tag != ""
+                    if allTags[tag]?
+                        allTags[tag] += 1
+                    else
+                        allTags[tag] = 1
+                    nbTags += 1
+            )
+        )
+        sortable = []
+        for tag of allTags
+            sortable.push([tag, allTags[tag]])
+        for tag in sortable
+            size = 10 + 1.5 * 100 * tag[1] / nbTags
+            $("#tags-cloud").append(
+                "<span class='tag' style='font-size:" + size + "pt'>" + 
+                tag[0] + 
+                "</span> "
+            )
+
 
     afterRender: ->
         $(".url-field").focus()
@@ -35,6 +65,7 @@ module.exports = class AppView extends View
                 window.featureList = new List("bookmarks-list",
                                               window.sortOptions)
                 View.log "bookmarks loaded"
+                @setTagCloud()
 
     showForm: (evt) ->
         $container = $ "form .full-form"
@@ -77,7 +108,6 @@ module.exports = class AppView extends View
                     @cleanForm()
                     $("form .title").click()
                     $(".bookmark:first").addClass "new"
-                    console.log($(".bookmark:first"))
                     View.log "" + (title || url) + " added"
                 error: =>
                     View.error "Server error occured, " +
