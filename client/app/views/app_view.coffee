@@ -12,8 +12,8 @@ module.exports = class AppView extends View
         "click form .url-field": "showForm"
         "click form .title": "toggleForm"
         "click form .clean": "cleanForm"
-        "click .import": "import"
-        "click .export": "export"
+        "click button.import": "import"
+        "click button.export": "export"
         "change #bookmarks-file": "uploadFile"
 
     template: ->
@@ -34,7 +34,7 @@ module.exports = class AppView extends View
                     "valueNames": ["title", "url", "tags", "description"] }
                 window.featureList = new List("bookmarks-list",
                                               window.sortOptions)
-                alertify.log "bookmarks loaded"
+                View.log "bookmarks loaded"
 
     showForm: (evt) ->
         $container = $ "form .full-form"
@@ -78,12 +78,12 @@ module.exports = class AppView extends View
                     $("form .title").click()
                     $(".bookmark:first").addClass "new"
                     console.log($(".bookmark:first"))
-                    alertify.log "" + (title || url) + " added"
+                    View.log "" + (title || url) + " added"
                 error: =>
-                    alertify.alert "Server error occured, " +
-                                   "bookmark was not saved"
+                    View.error "Server error occured, " +
+                               "bookmark was not saved"
         else
-            alertify.alert "Url field is required"
+            View.error "Url field is required"
         false
 
     addBookmarkFromFile: (link) ->
@@ -125,7 +125,7 @@ module.exports = class AppView extends View
     uploadFile: (evt) ->
         file = evt.target.files[0]
         if file.type != "text/html"
-            alertify.alert "This file cannot be imported"
+            View.error "This file cannot be imported"
             return
 
         reader = new FileReader()
@@ -133,10 +133,9 @@ module.exports = class AppView extends View
         reader.readAsText(file)
 
     import: (evt) ->
-        alertify.confirm "Import html bookmarks file exported by " +
-                         "firefox or chrome",
-            (ok) -> if ok
-                $("#bookmarks-file").click()
+        View.confirm "Import html bookmarks file exported by " +
+                     "firefox or chrome",
+            () -> $("#bookmarks-file").click()
 
     export: (evt) ->
         window.location = "export"
