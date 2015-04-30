@@ -523,16 +523,18 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.setTagCloud = function() {
-    var allTags, i, len, results, size, sortable, tag;
+    var allTags, i, len, nbTags, results, size, sortable, tag;
     allTags = {};
+    nbTags = 0;
     this.bookmarksView.collection.forEach(function(bookmark) {
       return (bookmark.get("tags")).forEach(function(tag) {
         if (tag !== "") {
           if (allTags[tag] != null) {
-            return allTags[tag] += 1;
+            allTags[tag] += 1;
           } else {
-            return allTags[tag] = 1;
+            allTags[tag] = 1;
           }
+          return nbTags += 1;
         }
       });
     });
@@ -540,13 +542,10 @@ module.exports = AppView = (function(superClass) {
     for (tag in allTags) {
       sortable.push([tag, allTags[tag]]);
     }
-    sortable.sort(function(a, b) {
-      return a[1] - b[1];
-    });
     results = [];
     for (i = 0, len = sortable.length; i < len; i++) {
       tag = sortable[i];
-      size = 10 + 10 * tag[1] / tag.length;
+      size = 10 + 10 * tag[1] / nbTags;
       results.push($("#tags-cloud").append("<span class='tag' style='font-size:" + size + "pt'>" + tag[0] + "</span>"));
     }
     return results;

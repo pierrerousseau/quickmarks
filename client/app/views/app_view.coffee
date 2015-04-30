@@ -29,6 +29,7 @@ module.exports = class AppView extends View
 
     setTagCloud: ->
         allTags = {}
+        nbTags = 0
         @bookmarksView.collection.forEach((bookmark) ->
             (bookmark.get "tags").forEach((tag) ->
                 if tag != ""
@@ -36,16 +37,14 @@ module.exports = class AppView extends View
                         allTags[tag] += 1
                     else
                         allTags[tag] = 1
+                    nbTags += 1
             )
         )
         sortable = []
         for tag of allTags
             sortable.push([tag, allTags[tag]])
-        sortable.sort((a, b) ->
-            a[1] - b[1]
-        )
         for tag in sortable
-            size = 10 + 10 * tag[1] / tag.length
+            size = 10 + 10 * tag[1] / nbTags
             $("#tags-cloud").append(
                 "<span class='tag' style='font-size:" + size + "pt'>" + tag[0] + "</span>"
             )
