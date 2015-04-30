@@ -1,42 +1,59 @@
-(function(/*! Brunch !*/) {
+(function() {
   'use strict';
 
-  var globals = typeof window !== 'undefined' ? window : global;
+  var globals = typeof window === 'undefined' ? global : window;
   if (typeof globals.require === 'function') return;
 
   var modules = {};
   var cache = {};
+  var has = ({}).hasOwnProperty;
 
-  var has = function(object, name) {
-    return ({}).hasOwnProperty.call(object, name);
+  var aliases = {};
+
+  var endsWith = function(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
   };
 
-  var expand = function(root, name) {
-    var results = [], parts, part;
-    if (/^\.\.?(\/|$)/.test(name)) {
-      parts = [root, name].join('/').split('/');
-    } else {
-      parts = name.split('/');
-    }
-    for (var i = 0, length = parts.length; i < length; i++) {
-      part = parts[i];
-      if (part === '..') {
-        results.pop();
-      } else if (part !== '.' && part !== '') {
-        results.push(part);
+  var unalias = function(alias, loaderPath) {
+    var start = 0;
+    if (loaderPath) {
+      if (loaderPath.indexOf('components/' === 0)) {
+        start = 'components/'.length;
+      }
+      if (loaderPath.indexOf('/', start) > 0) {
+        loaderPath = loaderPath.substring(start, loaderPath.indexOf('/', start));
       }
     }
-    return results.join('/');
+    var result = aliases[alias + '/index.js'] || aliases[loaderPath + '/deps/' + alias + '/index.js'];
+    if (result) {
+      return 'components/' + result.substring(0, result.length - '.js'.length);
+    }
+    return alias;
   };
 
+  var expand = (function() {
+    var reg = /^\.\.?(\/|$)/;
+    return function(root, name) {
+      var results = [], parts, part;
+      parts = (reg.test(name) ? root + '/' + name : name).split('/');
+      for (var i = 0, length = parts.length; i < length; i++) {
+        part = parts[i];
+        if (part === '..') {
+          results.pop();
+        } else if (part !== '.' && part !== '') {
+          results.push(part);
+        }
+      }
+      return results.join('/');
+    };
+  })();
   var dirname = function(path) {
     return path.split('/').slice(0, -1).join('/');
   };
 
   var localRequire = function(path) {
     return function(name) {
-      var dir = dirname(path);
-      var absolute = expand(dir, name);
+      var absolute = expand(dirname(path), name);
       return globals.require(absolute, path);
     };
   };
@@ -51,21 +68,26 @@
   var require = function(name, loaderPath) {
     var path = expand(name, '.');
     if (loaderPath == null) loaderPath = '/';
+    path = unalias(name, loaderPath);
 
-    if (has(cache, path)) return cache[path].exports;
-    if (has(modules, path)) return initModule(path, modules[path]);
+    if (has.call(cache, path)) return cache[path].exports;
+    if (has.call(modules, path)) return initModule(path, modules[path]);
 
     var dirIndex = expand(path, './index');
-    if (has(cache, dirIndex)) return cache[dirIndex].exports;
-    if (has(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
+    if (has.call(cache, dirIndex)) return cache[dirIndex].exports;
+    if (has.call(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
 
     throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
   };
 
-  var define = function(bundle, fn) {
+  require.alias = function(from, to) {
+    aliases[to] = from;
+  };
+
+  require.register = require.define = function(bundle, fn) {
     if (typeof bundle === 'object') {
       for (var key in bundle) {
-        if (has(bundle, key)) {
+        if (has.call(bundle, key)) {
           modules[key] = bundle[key];
         }
       }
@@ -74,21 +96,18 @@
     }
   };
 
-  var list = function() {
+  require.list = function() {
     var result = [];
     for (var item in modules) {
-      if (has(modules, item)) {
+      if (has.call(modules, item)) {
         result.push(item);
       }
     }
     return result;
   };
 
+  require.brunch = true;
   globals.require = require;
-  globals.require.define = define;
-  globals.require.register = define;
-  globals.require.list = list;
-  globals.require.brunch = true;
 })();
 require.register("collections/bookmark_collection", function(exports, require, module) {
 var Bookmark, BookmarkCollection,
@@ -117,7 +136,7 @@ module.exports = BookmarkCollection = (function(superClass) {
 
 });
 
-;require.register("initialize", function(exports, require, module) {
+require.register("initialize", function(exports, require, module) {
 if (this.CozyApp == null) {
   this.CozyApp = {};
 }
@@ -150,7 +169,7 @@ $(function() {
 
 });
 
-;require.register("lib/app_helpers", function(exports, require, module) {
+require.register("lib/app_helpers", function(exports, require, module) {
 (function() {
   return (function() {
     var console, dummy, method, methods, results;
@@ -168,7 +187,7 @@ $(function() {
 
 });
 
-;require.register("lib/view", function(exports, require, module) {
+require.register("lib/view", function(exports, require, module) {
 var View,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -267,7 +286,7 @@ module.exports = View = (function(superClass) {
 
 });
 
-;require.register("lib/view_collection", function(exports, require, module) {
+require.register("lib/view_collection", function(exports, require, module) {
 var View, ViewCollection, methods,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -408,7 +427,7 @@ module.exports = ViewCollection;
 
 });
 
-;require.register("models/bookmark", function(exports, require, module) {
+require.register("models/bookmark", function(exports, require, module) {
 var Bookmark,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -452,7 +471,7 @@ module.exports = Bookmark = (function(superClass) {
 
 });
 
-;require.register("routers/app_router", function(exports, require, module) {
+require.register("routers/app_router", function(exports, require, module) {
 var AppRouter,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -474,7 +493,7 @@ module.exports = AppRouter = (function(superClass) {
 
 });
 
-;require.register("views/app_view", function(exports, require, module) {
+require.register("views/app_view", function(exports, require, module) {
 var AppRouter, AppView, Bookmark, BookmarksView, View,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -546,7 +565,7 @@ module.exports = AppView = (function(superClass) {
     for (i = 0, len = sortable.length; i < len; i++) {
       tag = sortable[i];
       size = 10 + 100 * tag[1] / nbTags;
-      results.push($("#tags-cloud").append("<span class='tag' style='font-size:" + size + "pt'>" + tag[0] + "</span>"));
+      results.push($("#tags-cloud").append("<span class='tag' style='font-size:" + size + "pt'>" + tag[0] + "</span> "));
     }
     return results;
   };
@@ -728,7 +747,7 @@ module.exports = AppView = (function(superClass) {
 
 });
 
-;require.register("views/bookmark_view", function(exports, require, module) {
+require.register("views/bookmark_view", function(exports, require, module) {
 var BookmarkView, View,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -803,7 +822,7 @@ module.exports = BookmarkView = (function(superClass) {
 
 });
 
-;require.register("views/bookmarks_view", function(exports, require, module) {
+require.register("views/bookmarks_view", function(exports, require, module) {
 var BookmarkCollection, BookmarkView, BookmarksView, ViewCollection,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -852,7 +871,7 @@ module.exports = BookmarksView = (function(superClass) {
 
 });
 
-;require.register("views/templates/bookmark", function(exports, require, module) {
+require.register("views/templates/bookmark", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
@@ -892,7 +911,7 @@ return buf.join("");
 };
 });
 
-;require.register("views/templates/home", function(exports, require, module) {
+require.register("views/templates/home", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
@@ -904,5 +923,5 @@ return buf.join("");
 };
 });
 
-;
+
 //# sourceMappingURL=app.js.map

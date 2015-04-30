@@ -407,6 +407,7 @@ textarea {
 #tags-cloud {
   margin-left: 5em;
   height: auto;
+  text-align: center;
 }
 #tags-cloud span {
   padding: 0.1em;
