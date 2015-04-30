@@ -564,7 +564,7 @@ module.exports = AppView = (function(superClass) {
     results = [];
     for (i = 0, len = sortable.length; i < len; i++) {
       tag = sortable[i];
-      size = 10 + 100 * tag[1] / nbTags;
+      size = 10 + 1.5 * 100 * tag[1] / nbTags;
       results.push($("#tags-cloud").append("<span class='tag' style='font-size:" + size + "pt'>" + tag[0] + "</span> "));
     }
     return results;
