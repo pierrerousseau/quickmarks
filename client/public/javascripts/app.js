@@ -504,7 +504,8 @@ module.exports = AppView = (function(superClass) {
     "click form .clean": "cleanForm",
     "click button.import": "import",
     "click button.export": "export",
-    "change #bookmarks-file": "uploadFile"
+    "change #bookmarks-file": "uploadFile",
+    "click .tag": "tagClick"
   };
 
   AppView.prototype.template = function() {
@@ -513,6 +514,42 @@ module.exports = AppView = (function(superClass) {
 
   AppView.prototype.initialize = function() {
     return this.router = CozyApp.Routers.AppRouter = new AppRouter();
+  };
+
+  AppView.prototype.tagClick = function(evt) {
+    var tag;
+    tag = $(evt.currentTarget).text();
+    return $("input.search").val(tag);
+  };
+
+  AppView.prototype.setTagCloud = function() {
+    var allTags, i, len, results, size, sortable, tag;
+    allTags = {};
+    this.bookmarksView.collection.forEach(function(bookmark) {
+      return (bookmark.get("tags")).forEach(function(tag) {
+        if (tag !== "") {
+          if (allTags[tag] != null) {
+            return allTags[tag] += 1;
+          } else {
+            return allTags[tag] = 1;
+          }
+        }
+      });
+    });
+    sortable = [];
+    for (tag in allTags) {
+      sortable.push([tag, allTags[tag]]);
+    }
+    sortable.sort(function(a, b) {
+      return a[1] - b[1];
+    });
+    results = [];
+    for (i = 0, len = sortable.length; i < len; i++) {
+      tag = sortable[i];
+      size = 10 + 10 * tag[1] / tag.length;
+      results.push($("#tags-cloud").append("<span class='tag' style='font-size:" + size + "pt'>" + tag[0] + "</span>"));
+    }
+    return results;
   };
 
   AppView.prototype.afterRender = function() {
@@ -527,7 +564,8 @@ module.exports = AppView = (function(superClass) {
             "valueNames": ["title", "url", "tags", "description"]
           };
           window.featureList = new List("bookmarks-list", window.sortOptions);
-          return View.log("bookmarks loaded");
+          View.log("bookmarks loaded");
+          return _this.setTagCloud();
         };
       })(this)
     });
@@ -587,7 +625,6 @@ module.exports = AppView = (function(superClass) {
             _this.cleanForm();
             $("form .title").click();
             $(".bookmark:first").addClass("new");
-            console.log($(".bookmark:first"));
             return View.log("" + (title || url) + " added");
           };
         })(this),
@@ -843,7 +880,7 @@ if ( model.description || model.readableTags)
 buf.push('<div class="description"> ');
 if ( model.readableTags)
 {
-buf.push('<div class="tags">aa<span>' + escape((interp = model.readableTags) == null ? '' : interp) + '</span></div>');
+buf.push('<div class="tags"><span>' + escape((interp = model.readableTags) == null ? '' : interp) + '</span></div>');
 }
 if ( model.description)
 {
@@ -862,7 +899,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><input type="file" name="bookmarks-file" id="bookmarks-file"/><span class="import"><button title="import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload import"><p class="imported"></p><p class="importe-failed"></p></button></span><span class="export"><button title="export bookmarks in html" class="glyphicon glyphicon-download export"></button></span><form id="create-bookmark-form" role="form"><div class="panel panel-default"><div class="panel-heading title"><h3 title="Show the full form" class="panel-title"> \nBookmark a link</h3><div class="row"><div class="form-group col-xs-8"><input placeholder="url" class="form-control url-field"/></div></div></div><div class="panel-body full-form"><div class="row"><div class="form-group col-xs-5"><input placeholder="title" class="form-control title-field"/></div><div class="form-group col-xs-5"><input placeholder="tags, separated by \',\'" class="form-control tags-field"/></div></div><div class="row"><div class="form-group col-xs-10"><textarea placeholder="description" class="form-control description-field"></textarea></div><div class="buttons col-xs-2"><button title="Save the bookmark" class="glyphicon glyphicon-ok-circle create"></button><button title="Clean the form" class="glyphicon glyphicon-remove-circle clean"></button></div></div></div></div></form><div id="bookmarks-list"><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">mY BOOkmarks</h3><div class="row"><div class="tools col-xs-12"><div class="form-group"><input placeholder="search" class="form-control search"/></div><button title="Sort links" data-sort="title" class="glyphicon glyphicon-sort sort descending"></button></div></div></div><div class="panel-body"><ul class="list"></ul></div></div></div></div>');
+buf.push('<div id="content"><input type="file" name="bookmarks-file" id="bookmarks-file"/><span class="import"><button title="import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload import"><p class="imported"></p><p class="importe-failed"></p></button></span><span class="export"><button title="export bookmarks in html" class="glyphicon glyphicon-download export"></button></span><form id="create-bookmark-form" role="form"><div class="panel panel-default"><div class="panel-heading title"><h3 title="Show the full form" class="panel-title"> \nBookmark a link</h3><div class="row"><div class="form-group col-xs-8"><input placeholder="url" class="form-control url-field"/></div></div></div><div class="panel-body full-form"><div class="row"><div class="form-group col-xs-5"><input placeholder="title" class="form-control title-field"/></div><div class="form-group col-xs-5"><input placeholder="tags, separated by \',\'" class="form-control tags-field"/></div></div><div class="row"><div class="form-group col-xs-10"><textarea placeholder="description" class="form-control description-field"></textarea></div><div class="buttons col-xs-2"><button title="Save the bookmark" class="glyphicon glyphicon-ok-circle create"></button><button title="Clean the form" class="glyphicon glyphicon-remove-circle clean"></button></div></div></div></div></form><div id="bookmarks-list"><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">mY BOOkmarks</h3><div class="row"><div class="tools col-xs-12"><div class="form-group"><input placeholder="search" class="form-control search"/></div><button title="Sort links" data-sort="title" class="glyphicon glyphicon-sort sort descending"></button></div></div><div id="tags-cloud"><p></p></div></div><div class="panel-body"><ul class="list"></ul></div></div></div></div>');
 }
 return buf.join("");
 };
