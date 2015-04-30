@@ -12,7 +12,7 @@ exports.config =
                     'vendor/javascripts/underscore-1.6.0.min.js'
                     'vendor/javascripts/backbone-1.1.2.min.js'
                     'vendor/javascripts/bootstrap-3.1.1.min.js'
-                    'vendor/javascripts/alertify-3.1.1.min.js'
+                    'vendor/javascripts/pnotify-2.0.1.min.js'
                     'vendor/javascripts/list.js'
                 ]
 
@@ -20,7 +20,10 @@ exports.config =
             joinTo: 'stylesheets/app.css'
             order:
                 before: []
-                after: ['vendor/stylesheets/helpers.css']
+                after: [
+                    'vendor/stylesheets/pnotify-2.0.1.min.css'
+                    'vendor/stylesheets/helpers.css'
+                ]
         templates:
             defaultExtension: 'jade'
             joinTo: 'javascripts/app.js'

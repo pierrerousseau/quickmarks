@@ -213,6 +213,54 @@ module.exports = View = (function(superClass) {
     return Backbone.View.prototype.remove.call(this);
   };
 
+  View.confirm = function(text, cb) {
+    return $(function() {
+      return (new PNotify({
+        "text": text,
+        "icon": false,
+        "hide": false,
+        "type": "info",
+        "confirm": {
+          "confirm": true
+        },
+        "buttons": {
+          "sticker": false
+        },
+        "width": "40%"
+      })).get().on("pnotify.confirm", function() {
+        return cb();
+      });
+    });
+  };
+
+  View.error = function(text) {
+    return $(function() {
+      return new PNotify({
+        "text": text,
+        "icon": false,
+        "hide": false,
+        "type": "error",
+        "buttons": {
+          "sticker": false
+        }
+      });
+    });
+  };
+
+  View.log = function(text) {
+    return $(function() {
+      return new PNotify({
+        "text": text,
+        "icon": false,
+        "opacity": .8,
+        "delay": 2000,
+        "buttons": {
+          "sticker": false
+        }
+      });
+    });
+  };
+
   return View;
 
 })(Backbone.View);
@@ -479,7 +527,7 @@ module.exports = AppView = (function(superClass) {
             "valueNames": ["title", "url", "tags", "description"]
           };
           window.featureList = new List("bookmarks-list", window.sortOptions);
-          return alertify.log("bookmarks loaded");
+          return View.log("bookmarks loaded");
         };
       })(this)
     });
@@ -540,17 +588,17 @@ module.exports = AppView = (function(superClass) {
             $("form .title").click();
             $(".bookmark:first").addClass("new");
             console.log($(".bookmark:first"));
-            return alertify.log("" + (title || url) + " added");
+            return View.log("" + (title || url) + " added");
           };
         })(this),
         error: (function(_this) {
           return function() {
-            return alertify.alert("Server error occured, " + "bookmark was not saved");
+            return View.error("Server error occured, " + "bookmark was not saved");
           };
         })(this)
       });
     } else {
-      alertify.alert("Url field is required");
+      View.error("Url field is required");
     }
     return false;
   };
@@ -616,7 +664,7 @@ module.exports = AppView = (function(superClass) {
     var file, reader;
     file = evt.target.files[0];
     if (file.type !== "text/html") {
-      alertify.alert("This file cannot be imported");
+      View.error("This file cannot be imported");
       return;
     }
     reader = new FileReader();
@@ -629,7 +677,7 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype["import"] = function(evt) {
-    return alertify.confirm("Import html bookmarks file exported by " + "firefox or chrome", function(ok) {
+    return View.error("Import html bookmarks file exported by " + "firefox or chrome", function(ok) {
       if (ok) {
         return $("#bookmarks-file").click();
       }
@@ -703,12 +751,12 @@ module.exports = BookmarkView = (function(superClass) {
         return function() {
           _this.destroy();
           window.featureList.remove("title", title);
-          return alertify.log("" + title + " removed and placed in form");
+          return View.log("" + title + " removed and placed in form");
         };
       })(this),
       error: (function(_this) {
         return function() {
-          alertify.alert("Server error occured, bookmark was not deleted.");
+          View.error("Server error occured, bookmark was not deleted.");
           return _this.$('.delete-button').html("delete");
         };
       })(this)
