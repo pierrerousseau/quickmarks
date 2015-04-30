@@ -46,7 +46,9 @@ module.exports = class AppView extends View
         for tag in sortable
             size = 10 + 100 * tag[1] / nbTags
             $("#tags-cloud").append(
-                "<span class='tag' style='font-size:" + size + "pt'>" + tag[0] + "</span>"
+                "<span class='tag' style='font-size:" + size + "pt'>" + 
+                tag[0] + 
+                "</span> "
             )
 
 
