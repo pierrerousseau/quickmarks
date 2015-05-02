@@ -16,6 +16,8 @@ module.exports = class AppView extends View
         "click button.export": "export"
         "change #bookmarks-file": "uploadFile"
         "click .tag": "tagClick"
+        "click .tools .clean": "cleanSearch"
+        "click #tags-cloud h4": "toggleCloud"
 
     template: ->
         require "./templates/home"
@@ -23,11 +25,17 @@ module.exports = class AppView extends View
     initialize: ->
         @router = CozyApp.Routers.AppRouter = new AppRouter()
 
+    toggleCloud: ->
+        $("#tags-cloud span").toggle()
+
+    cleanSearch: ->
+        $("input.search").val("")
+        window.featureList.search()
+
     tagClick: (evt) ->
         tag = $(evt.currentTarget).text()
         $("input.search").val(tag)
         window.featureList.search(tag)
-
 
     setTagCloud: ->
         allTags = {}
@@ -45,11 +53,13 @@ module.exports = class AppView extends View
         sortable = []
         for tag of allTags
             sortable.push([tag, allTags[tag]])
+
+        factor = if nbTags > 20 then 1.5 else 1.0
         for tag in sortable
-            size = 10 + 1.5 * 100 * tag[1] / nbTags
+            size = 10 + factor * 100 * tag[1] / nbTags
             $("#tags-cloud").append(
-                "<span class='tag' style='font-size:" + size + "pt'>" + 
-                tag[0] + 
+                "<span class='tag' title='" + tag[1] + "' style='font-size:" + size + "pt'>" +
+                tag[0] +
                 "</span> "
             )
 

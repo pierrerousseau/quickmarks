@@ -1,4 +1,4 @@
-# Bookmark application
+# Quickmarks
 
 Store all your bookmarks here !
 

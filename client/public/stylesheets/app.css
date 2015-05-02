@@ -322,6 +322,11 @@ textarea {
   background: transparent;
   border: none;
 }
+#bookmarks-list .tools button.clean {
+  color: #428bca;
+  background: transparent;
+  border: none;
+}
 #bookmarks-list .bookmark.new {
   background-color: #4863a0;
   color: #a18648;
@@ -409,7 +414,12 @@ textarea {
   height: auto;
   text-align: center;
 }
+#tags-cloud h4 {
+  color: #a18648;
+  cursor: pointer;
+}
 #tags-cloud span {
+  display: none;
   padding: 0.1em;
   cursor: pointer;
 }
