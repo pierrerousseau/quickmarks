@@ -1,21 +1,22 @@
 .buttons
-    button.glyphicon.glyphicon-share(
-        class="delete"
-        title="Remove this link from saved bookmarks and place its details into the form")
+    button.bookmark-delete(
+        class="glyphicon glyphicon-share"
+        title="Remove this link from saved bookmarks and place its details into the form"
+    )
         
-.all
+.bookmark-link
     if model.title
-            .title
-                a(href="#{model.httpUrl}", target="_blank") #{model.title}
-            .url
-                a(href="#{model.httpUrl}", target="_blank") #{model.url}
+        .bookmark-title
+            a(href="#{model.httpUrl}", target="_blank") #{model.title}
+        .bookmark-url
+            a(href="#{model.httpUrl}", target="_blank") #{model.url}
     else
-        .title.full
+        .bookmark-title.full
             a(href="#{model.httpUrl}", target="_blank") #{model.url}
 if model.description || model.readableTags
-    .description 
+    .bookmark-description 
         if model.readableTags
-            .tags
+            .bookmark-tags
                 span #{model.readableTags}
         if model.description
             p #{model.description}

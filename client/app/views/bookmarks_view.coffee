@@ -3,7 +3,7 @@ BookmarkView       = require './bookmark_view'
 BookmarkCollection = require '../collections/bookmark_collection'
 
 module.exports = class BookmarksView extends ViewCollection
-    el: '#bookmarks-list .list'
+    el: '#bookmarks ul'
 
     view: BookmarkView
 
