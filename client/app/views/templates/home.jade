@@ -1,67 +1,63 @@
 #content
-    input(type="file", name="bookmarks-file", id="bookmarks-file")
-    span.import
-        button.glyphicon.glyphicon-upload(
-                title="import html bookmarks files exported from your browser",
-                class="import")
-            p.imported
-            p.importe-failed
-    span.export
-        button.glyphicon.glyphicon-download(title="export bookmarks in html",
-                                            class="export")
+    #bookmarks-exchange
+        input#bookmarks-exchange-file(
+            type="file", 
+            name="exchange-file"
+        )
+        button#bookmarks-exchange-import(
+            class="glyphicon glyphicon-upload"
+            title="Import html bookmarks files exported from your browser"
+        )
+        button#bookmarks-exchange-export(
+            class="glyphicon glyphicon-download"
+            title="Export bookmarks in html"
+        )
+        #bookmarks-exchange-done
+        #bookmarks-exchange-failed
 
-    form#create-bookmark-form(role="form")
-        .panel.panel-default
-            .panel-heading(class="title")
-                h3.panel-title(title="Show the full form") 
-                    | Bookmark a link
-                .row
-                    .form-group.col-xs-8
-                        input.form-control(class="url-field",
-                                           placeholder="url")
-            .panel-body.full-form
-                .row
-                    .form-group.col-xs-5
-                        input.form-control(class="title-field",
-                                           placeholder="title")
-                    .form-group.col-xs-5
-                        input.form-control(class="tags-field",
-                                           placeholder="tags, separated by ','")
-                .row
-                    .form-group.col-xs-10
-                        textarea.form-control(class="description-field",
-                                              placeholder="description")
-                    .buttons.col-xs-2
-                        button.glyphicon.glyphicon-ok-circle(
-                            class="create",
-                            title="Save the bookmark")
+    form#bookmark-add
+        #bookmark-add-title(
+            title="Show the full form"
+        ) Bookmark a link
+
+        input#bookmark-add-url(
+            placeholder="url"
+        )
+        input#bookmark-add-title(
+            placeholder="title"
+        )
+        input#bookmark-add-tags(
+            placeholder="tags, separated by ','"
+        )
+        textarea#bookmark-add-description(
+            placeholder="description"
+        )
+        #bookmark-add-buttons
+            button#bookmark-add-add(
+                class="glyphicon glyphicon-ok-circle",
+                title="Save the bookmark"
+            )
+            button#bookmark-add-clean(
+                class="glyphicon glyphicon-ok-circle",
+                title="Clear the form"
+            )
                             
-                        button.glyphicon.glyphicon-remove-circle(
-                            class="clean",
-                            title="Clear the form")
-                            
+    #bookmarks-tools
+        input#bookmarks-tools-search(
+            placeholder="search"
+        )
+        button#bookmarks-tools-sort(
+            class="glyphicon glyphicon-sort",
+            title="Sort links",
+            data-sort="title"
+        )
+        button#bookmarks-tools-clean(
+            class="glyphicon glyphicon-remove-circle",
+            title="Clear search field"
+        )
 
+    #tags-cloud 
+        h4 Nuage de tags
 
-    #bookmarks-list
-        .panel.panel-default
-            .panel-heading
-                h3.panel-title
-                    | mY BOOkmarks
-                .row
-                    .tools.col-xs-12
-                        .form-group
-                            input.form-control(class="search",
-                                               placeholder="search")
-                        button.glyphicon.glyphicon-sort(
-                            class="sort descending",
-                            title="Sort links",
-                            data-sort="title")
-                        button.glyphicon.glyphicon-remove-circle(
-                            class="clean",
-                            title="Clear search field"
-                        )
-                #tags-cloud 
-                    h4 Nuage de tags
-                    p
-            .panel-body
-                ul.list
+    #bookmarks
+        ul
