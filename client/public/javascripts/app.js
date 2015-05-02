@@ -1,59 +1,42 @@
-(function() {
+(function(/*! Brunch !*/) {
   'use strict';
 
-  var globals = typeof window === 'undefined' ? global : window;
+  var globals = typeof window !== 'undefined' ? window : global;
   if (typeof globals.require === 'function') return;
 
   var modules = {};
   var cache = {};
-  var has = ({}).hasOwnProperty;
 
-  var aliases = {};
-
-  var endsWith = function(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  var has = function(object, name) {
+    return ({}).hasOwnProperty.call(object, name);
   };
 
-  var unalias = function(alias, loaderPath) {
-    var start = 0;
-    if (loaderPath) {
-      if (loaderPath.indexOf('components/' === 0)) {
-        start = 'components/'.length;
-      }
-      if (loaderPath.indexOf('/', start) > 0) {
-        loaderPath = loaderPath.substring(start, loaderPath.indexOf('/', start));
+  var expand = function(root, name) {
+    var results = [], parts, part;
+    if (/^\.\.?(\/|$)/.test(name)) {
+      parts = [root, name].join('/').split('/');
+    } else {
+      parts = name.split('/');
+    }
+    for (var i = 0, length = parts.length; i < length; i++) {
+      part = parts[i];
+      if (part === '..') {
+        results.pop();
+      } else if (part !== '.' && part !== '') {
+        results.push(part);
       }
     }
-    var result = aliases[alias + '/index.js'] || aliases[loaderPath + '/deps/' + alias + '/index.js'];
-    if (result) {
-      return 'components/' + result.substring(0, result.length - '.js'.length);
-    }
-    return alias;
+    return results.join('/');
   };
 
-  var expand = (function() {
-    var reg = /^\.\.?(\/|$)/;
-    return function(root, name) {
-      var results = [], parts, part;
-      parts = (reg.test(name) ? root + '/' + name : name).split('/');
-      for (var i = 0, length = parts.length; i < length; i++) {
-        part = parts[i];
-        if (part === '..') {
-          results.pop();
-        } else if (part !== '.' && part !== '') {
-          results.push(part);
-        }
-      }
-      return results.join('/');
-    };
-  })();
   var dirname = function(path) {
     return path.split('/').slice(0, -1).join('/');
   };
 
   var localRequire = function(path) {
     return function(name) {
-      var absolute = expand(dirname(path), name);
+      var dir = dirname(path);
+      var absolute = expand(dir, name);
       return globals.require(absolute, path);
     };
   };
@@ -68,26 +51,21 @@
   var require = function(name, loaderPath) {
     var path = expand(name, '.');
     if (loaderPath == null) loaderPath = '/';
-    path = unalias(name, loaderPath);
 
-    if (has.call(cache, path)) return cache[path].exports;
-    if (has.call(modules, path)) return initModule(path, modules[path]);
+    if (has(cache, path)) return cache[path].exports;
+    if (has(modules, path)) return initModule(path, modules[path]);
 
     var dirIndex = expand(path, './index');
-    if (has.call(cache, dirIndex)) return cache[dirIndex].exports;
-    if (has.call(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
+    if (has(cache, dirIndex)) return cache[dirIndex].exports;
+    if (has(modules, dirIndex)) return initModule(dirIndex, modules[dirIndex]);
 
     throw new Error('Cannot find module "' + name + '" from '+ '"' + loaderPath + '"');
   };
 
-  require.alias = function(from, to) {
-    aliases[to] = from;
-  };
-
-  require.register = require.define = function(bundle, fn) {
+  var define = function(bundle, fn) {
     if (typeof bundle === 'object') {
       for (var key in bundle) {
-        if (has.call(bundle, key)) {
+        if (has(bundle, key)) {
           modules[key] = bundle[key];
         }
       }
@@ -96,18 +74,21 @@
     }
   };
 
-  require.list = function() {
+  var list = function() {
     var result = [];
     for (var item in modules) {
-      if (has.call(modules, item)) {
+      if (has(modules, item)) {
         result.push(item);
       }
     }
     return result;
   };
 
-  require.brunch = true;
   globals.require = require;
+  globals.require.define = define;
+  globals.require.register = define;
+  globals.require.list = list;
+  globals.require.brunch = true;
 })();
 require.register("collections/bookmark_collection", function(exports, require, module) {
 var Bookmark, BookmarkCollection,
@@ -136,7 +117,7 @@ module.exports = BookmarkCollection = (function(superClass) {
 
 });
 
-require.register("initialize", function(exports, require, module) {
+;require.register("initialize", function(exports, require, module) {
 if (this.CozyApp == null) {
   this.CozyApp = {};
 }
@@ -169,7 +150,7 @@ $(function() {
 
 });
 
-require.register("lib/app_helpers", function(exports, require, module) {
+;require.register("lib/app_helpers", function(exports, require, module) {
 (function() {
   return (function() {
     var console, dummy, method, methods, results;
@@ -187,7 +168,7 @@ require.register("lib/app_helpers", function(exports, require, module) {
 
 });
 
-require.register("lib/view", function(exports, require, module) {
+;require.register("lib/view", function(exports, require, module) {
 var View,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -286,7 +267,7 @@ module.exports = View = (function(superClass) {
 
 });
 
-require.register("lib/view_collection", function(exports, require, module) {
+;require.register("lib/view_collection", function(exports, require, module) {
 var View, ViewCollection, methods,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -427,7 +408,7 @@ module.exports = ViewCollection;
 
 });
 
-require.register("models/bookmark", function(exports, require, module) {
+;require.register("models/bookmark", function(exports, require, module) {
 var Bookmark,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -471,7 +452,7 @@ module.exports = Bookmark = (function(superClass) {
 
 });
 
-require.register("routers/app_router", function(exports, require, module) {
+;require.register("routers/app_router", function(exports, require, module) {
 var AppRouter,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -493,7 +474,7 @@ module.exports = AppRouter = (function(superClass) {
 
 });
 
-require.register("views/app_view", function(exports, require, module) {
+;require.register("views/app_view", function(exports, require, module) {
 var AppRouter, AppView, Bookmark, BookmarksView, View,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -524,7 +505,9 @@ module.exports = AppView = (function(superClass) {
     "click button.import": "import",
     "click button.export": "export",
     "change #bookmarks-file": "uploadFile",
-    "click .tag": "tagClick"
+    "click .tag": "tagClick",
+    "click .tools .clean": "cleanSearch",
+    "click #tags-cloud h4": "toggleCloud"
   };
 
   AppView.prototype.template = function() {
@@ -535,6 +518,15 @@ module.exports = AppView = (function(superClass) {
     return this.router = CozyApp.Routers.AppRouter = new AppRouter();
   };
 
+  AppView.prototype.toggleCloud = function() {
+    return $("#tags-cloud span").toggle();
+  };
+
+  AppView.prototype.cleanSearch = function() {
+    $("input.search").val("");
+    return window.featureList.search();
+  };
+
   AppView.prototype.tagClick = function(evt) {
     var tag;
     tag = $(evt.currentTarget).text();
@@ -543,7 +535,7 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.setTagCloud = function() {
-    var allTags, i, len, nbTags, results, size, sortable, tag;
+    var allTags, factor, i, len, nbTags, results, size, sortable, tag;
     allTags = {};
     nbTags = 0;
     this.bookmarksView.collection.forEach(function(bookmark) {
@@ -562,11 +554,12 @@ module.exports = AppView = (function(superClass) {
     for (tag in allTags) {
       sortable.push([tag, allTags[tag]]);
     }
+    factor = nbTags > 20 ? 1.5 : 1.0;
     results = [];
     for (i = 0, len = sortable.length; i < len; i++) {
       tag = sortable[i];
-      size = 10 + 1.5 * 100 * tag[1] / nbTags;
-      results.push($("#tags-cloud").append("<span class='tag' style='font-size:" + size + "pt'>" + tag[0] + "</span> "));
+      size = 10 + factor * 100 * tag[1] / nbTags;
+      results.push($("#tags-cloud").append("<span class='tag' title='" + tag[1] + "' style='font-size:" + size + "pt'>" + tag[0] + "</span> "));
     }
     return results;
   };
@@ -748,7 +741,7 @@ module.exports = AppView = (function(superClass) {
 
 });
 
-require.register("views/bookmark_view", function(exports, require, module) {
+;require.register("views/bookmark_view", function(exports, require, module) {
 var BookmarkView, View,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
@@ -823,7 +816,7 @@ module.exports = BookmarkView = (function(superClass) {
 
 });
 
-require.register("views/bookmarks_view", function(exports, require, module) {
+;require.register("views/bookmarks_view", function(exports, require, module) {
 var BookmarkCollection, BookmarkView, BookmarksView, ViewCollection,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -872,7 +865,7 @@ module.exports = BookmarksView = (function(superClass) {
 
 });
 
-require.register("views/templates/bookmark", function(exports, require, module) {
+;require.register("views/templates/bookmark", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
@@ -912,17 +905,17 @@ return buf.join("");
 };
 });
 
-require.register("views/templates/home", function(exports, require, module) {
+;require.register("views/templates/home", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><input type="file" name="bookmarks-file" id="bookmarks-file"/><span class="import"><button title="import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload import"><p class="imported"></p><p class="importe-failed"></p></button></span><span class="export"><button title="export bookmarks in html" class="glyphicon glyphicon-download export"></button></span><form id="create-bookmark-form" role="form"><div class="panel panel-default"><div class="panel-heading title"><h3 title="Show the full form" class="panel-title"> \nBookmark a link</h3><div class="row"><div class="form-group col-xs-8"><input placeholder="url" class="form-control url-field"/></div></div></div><div class="panel-body full-form"><div class="row"><div class="form-group col-xs-5"><input placeholder="title" class="form-control title-field"/></div><div class="form-group col-xs-5"><input placeholder="tags, separated by \',\'" class="form-control tags-field"/></div></div><div class="row"><div class="form-group col-xs-10"><textarea placeholder="description" class="form-control description-field"></textarea></div><div class="buttons col-xs-2"><button title="Save the bookmark" class="glyphicon glyphicon-ok-circle create"></button><button title="Clean the form" class="glyphicon glyphicon-remove-circle clean"></button></div></div></div></div></form><div id="bookmarks-list"><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">mY BOOkmarks</h3><div class="row"><div class="tools col-xs-12"><div class="form-group"><input placeholder="search" class="form-control search"/></div><button title="Sort links" data-sort="title" class="glyphicon glyphicon-sort sort descending"></button></div></div><div id="tags-cloud"><p></p></div></div><div class="panel-body"><ul class="list"></ul></div></div></div></div>');
+buf.push('<div id="content"><input type="file" name="bookmarks-file" id="bookmarks-file"/><span class="import"><button title="import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload import"><p class="imported"></p><p class="importe-failed"></p></button></span><span class="export"><button title="export bookmarks in html" class="glyphicon glyphicon-download export"></button></span><form id="create-bookmark-form" role="form"><div class="panel panel-default"><div class="panel-heading title"><h3 title="Show the full form" class="panel-title"> \nBookmark a link</h3><div class="row"><div class="form-group col-xs-8"><input placeholder="url" class="form-control url-field"/></div></div></div><div class="panel-body full-form"><div class="row"><div class="form-group col-xs-5"><input placeholder="title" class="form-control title-field"/></div><div class="form-group col-xs-5"><input placeholder="tags, separated by \',\'" class="form-control tags-field"/></div></div><div class="row"><div class="form-group col-xs-10"><textarea placeholder="description" class="form-control description-field"></textarea></div><div class="buttons col-xs-2"><button title="Save the bookmark" class="glyphicon glyphicon-ok-circle create"></button><button title="Clear the form" class="glyphicon glyphicon-remove-circle clean"></button></div></div></div></div></form><div id="bookmarks-list"><div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">mY BOOkmarks</h3><div class="row"><div class="tools col-xs-12"><div class="form-group"><input placeholder="search" class="form-control search"/></div><button title="Sort links" data-sort="title" class="glyphicon glyphicon-sort sort descending"></button><button title="Clear search field" class="glyphicon glyphicon-remove-circle clean"></button></div></div><div id="tags-cloud"> <h4>Nuage de tags</h4><p></p></div></div><div class="panel-body"><ul class="list"></ul></div></div></div></div>');
 }
 return buf.join("");
 };
 });
 
-
+;
 //# sourceMappingURL=app.js.map
