@@ -11,10 +11,10 @@
         .bookmark-url
             a(href="#{model.httpUrl}", target="_blank") #{model.url}
     else
-        .bookmark-title.full
+        .bookmark-title
             a(href="#{model.httpUrl}", target="_blank") #{model.url}
 if model.description || model.readableTags
-    .bookmark-description 
+    .bookmark-description(class="box")
         if model.readableTags
             .bookmark-tags
                 span #{model.readableTags}

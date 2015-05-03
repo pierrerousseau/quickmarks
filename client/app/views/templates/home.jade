@@ -15,22 +15,22 @@
         #bookmarks-exchange-done
         #bookmarks-exchange-failed
 
-    form#bookmark-add
+    form#bookmark-add(class="box")
         #bookmark-add-title(
             title="Show the full form"
         ) Bookmark a link
 
-        input#bookmark-add-url(
+        input#bookmark-add-link-url(
             placeholder="url"
         )
-        input#bookmark-add-title(
+        input#bookmark-add-link-title(
             placeholder="title"
         )
-        input#bookmark-add-tags(
-            placeholder="tags, separated by ','"
-        )
-        textarea#bookmark-add-description(
+        textarea#bookmark-add-link-description(
             placeholder="description"
+        )
+        input#bookmark-add-link-tags(
+            placeholder="tags, separated by ','"
         )
         #bookmark-add-buttons
             button#bookmark-add-add(
@@ -38,26 +38,29 @@
                 title="Save the bookmark"
             )
             button#bookmark-add-clean(
-                class="glyphicon glyphicon-ok-circle",
+                class="glyphicon glyphicon-remove-circle",
                 title="Clear the form"
             )
                             
-    #bookmarks-tools
-        input#bookmarks-tools-search(
-            placeholder="search"
-        )
-        button#bookmarks-tools-sort(
-            class="glyphicon glyphicon-sort",
-            title="Sort links",
-            data-sort="title"
-        )
-        button#bookmarks-tools-clean(
-            class="glyphicon glyphicon-remove-circle",
-            title="Clear search field"
-        )
+    #bookmarks(class="box")
+        #bookmarks-tools
+            input#bookmarks-tools-search(
+                placeholder="search"
+            )
+            button#bookmarks-tools-clean(
+                class="glyphicon glyphicon-remove-circle",
+                title="Clear search field"
+            )
+            button#bookmarks-tools-tags(
+                class="glyphicon glyphicon-tags",
+                title="Toggle tags cloud"
+            )
+            button#bookmarks-tools-sort(
+                class="glyphicon glyphicon-sort",
+                title="Sort links",
+                data-sort="title"
+            )
 
-    #tags-cloud 
-        h4 Nuage de tags
+            #tags-cloud 
 
-    #bookmarks
         ul
