@@ -56,9 +56,9 @@ module.exports = class AppView extends View
 
         factor = if nbTags > 20 then 1.5 else 1.0
         for tag in sortable
-            size = 10 + factor * 100 * tag[1] / nbTags
+            size = 1 + factor * 10 * tag[1] / nbTags
             $("#tags-cloud").append(
-                "<span class='tag' title='" + tag[1] + "' style='font-size:" + size + "pt'>" +
+                "<span class='tag' title='" + tag[1] + " occurences' style='font-size:" + size + "em'>" +
                 tag[0] +
                 "</span> "
             )

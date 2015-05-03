@@ -558,8 +558,8 @@ module.exports = AppView = (function(superClass) {
     results = [];
     for (i = 0, len = sortable.length; i < len; i++) {
       tag = sortable[i];
-      size = 10 + factor * 100 * tag[1] / nbTags;
-      results.push($("#tags-cloud").append("<span class='tag' title='" + tag[1] + "' style='font-size:" + size + "pt'>" + tag[0] + "</span> "));
+      size = 1 + factor * 10 * tag[1] / nbTags;
+      results.push($("#tags-cloud").append("<span class='tag' title='" + tag[1] + " occurences' style='font-size:" + size + "em'>" + tag[0] + "</span> "));
     }
     return results;
   };
@@ -882,14 +882,14 @@ buf.push('>' + escape((interp = model.url) == null ? '' : interp) + '</a></div>'
 }
 else
 {
-buf.push('<div class="bookmark-title full"><a');
+buf.push('<div class="bookmark-title"><a');
 buf.push(attrs({ 'href':("" + (model.httpUrl) + ""), 'target':("_blank") }, {"href":true,"target":true}));
 buf.push('>' + escape((interp = model.url) == null ? '' : interp) + '</a></div>');
 }
 buf.push('</div>');
 if ( model.description || model.readableTags)
 {
-buf.push('<div class="bookmark-description"> ');
+buf.push('<div class="bookmark-description box">');
 if ( model.readableTags)
 {
 buf.push('<div class="bookmark-tags"><span>' + escape((interp = model.readableTags) == null ? '' : interp) + '</span></div>');
@@ -911,7 +911,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><div id="bookmarks-exchange"><input id="bookmarks-exchange-file" type="file" name="exchange-file"/><button id="bookmarks-exchange-import" title="Import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload"></button><button id="bookmarks-exchange-export" title="Export bookmarks in html" class="glyphicon glyphicon-download"></button><div id="bookmarks-exchange-done"></div><div id="bookmarks-exchange-failed"></div></div><form id="bookmark-add"><div id="bookmark-add-title" title="Show the full form">Bookmark a link</div><input id="bookmark-add-url" placeholder="url"/><input id="bookmark-add-title" placeholder="title"/><input id="bookmark-add-tags" placeholder="tags, separated by \',\'"/><textarea id="bookmark-add-description" placeholder="description"></textarea><div id="bookmark-add-buttons"><button id="bookmark-add-add" title="Save the bookmark" class="glyphicon glyphicon-ok-circle"></button><button id="bookmark-add-clean" title="Clear the form" class="glyphicon glyphicon-ok-circle"></button></div></form><div id="bookmarks-tools"><input id="bookmarks-tools-search" placeholder="search"/><button id="bookmarks-tools-sort" title="Sort links" data-sort="title" class="glyphicon glyphicon-sort"></button><button id="bookmarks-tools-clean" title="Clear search field" class="glyphicon glyphicon-remove-circle"></button></div><div id="tags-cloud"> <h4>Nuage de tags</h4></div><div id="bookmarks"><ul></ul></div></div>');
+buf.push('<div id="content"><div id="bookmarks-exchange"><input id="bookmarks-exchange-file" type="file" name="exchange-file"/><button id="bookmarks-exchange-import" title="Import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload"></button><button id="bookmarks-exchange-export" title="Export bookmarks in html" class="glyphicon glyphicon-download"></button><div id="bookmarks-exchange-done"></div><div id="bookmarks-exchange-failed"></div></div><form id="bookmark-add" class="box"><div id="bookmark-add-title" title="Show the full form">Bookmark a link</div><input id="bookmark-add-link-url" placeholder="url"/><input id="bookmark-add-link-title" placeholder="title"/><textarea id="bookmark-add-link-description" placeholder="description"></textarea><input id="bookmark-add-link-tags" placeholder="tags, separated by \',\'"/><div id="bookmark-add-buttons"><button id="bookmark-add-add" title="Save the bookmark" class="glyphicon glyphicon-ok-circle"></button><button id="bookmark-add-clean" title="Clear the form" class="glyphicon glyphicon-remove-circle"></button></div></form><div id="bookmarks" class="box"><div id="bookmarks-tools"><input id="bookmarks-tools-search" placeholder="search"/><button id="bookmarks-tools-clean" title="Clear search field" class="glyphicon glyphicon-remove-circle"></button><button id="bookmarks-tools-tags" title="Toggle tags cloud" class="glyphicon glyphicon-tags"></button><button id="bookmarks-tools-sort" title="Sort links" data-sort="title" class="glyphicon glyphicon-sort"></button><div id="tags-cloud"> </div></div><ul></ul></div></div>');
 }
 return buf.join("");
 };

@@ -9,3 +9,174 @@
 @import '_layout'
 @import '_responsive'
 
+body-back = #ccc
+
+content-padding = 1em
+
+box-border = 1px solid #1e1e1e
+box-radius = 4px
+box-back   = #1f1f1f
+box-color  = #bbb
+
+input-color  = #eee
+input-back   = #262626
+input-shadow = inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(121,186,236,.6)
+
+tools-color  = #5e7d7e
+tools-comp-color = #7d5f5e
+
+good-color = #4cc417
+bad-color  = #9118c4
+
+title-font-size = 2em
+title-font-weight = bold
+
+body
+    background: body-back
+
+button
+    background: transparent
+    border: none
+    padding: 6px 12px
+    font-size: 1.25em
+    &:hover
+        opacity: .8
+
+textarea
+input
+    display: inline-block
+    width: 100%
+    height: 2em
+    padding: .5em
+    margin: .5em
+    border: box-border
+    border-radius: box-radius
+    background: input-back
+    color: input-color
+    &:focus
+        box-shadow: input-shadow
+
+textarea
+    height: 5em
+
+
+.box
+    border: box-border
+    border-radius: box-radius
+    background: box-back
+    color: box-color
+    padding: 1em
+    margin-bottom: 1em
+
+
+#content
+    padding: content-padding
+
+
+#bookmarks-exchange
+    position: absolute
+    top: content-padding
+    right: content-padding
+    padding: .1em
+
+    color: tools-color
+
+    button
+        margin: .1em
+        padding: 0
+
+#bookmarks-exchange-file
+    display: none
+
+#bookmark-add
+    textarea
+    input
+        width: 95%
+
+#bookmark-add-title
+    font-size: title-font-size
+    font-weight: title-font-weight
+    margin-bottom: 1em
+
+#bookmark-add-title
+    cursor: pointer
+
+#bookmark-add-buttons
+    width: 95%
+    text-align: right
+
+#bookmark-add-add
+    font-weight: bolder
+    font-size: 2em
+    color: good-color
+
+#bookmark-add-clean
+    color: bad-color
+
+#bookmark-add-link-title
+#bookmark-add-link-description
+#bookmark-add-link-tags
+#bookmark-add-buttons
+    display: none
+
+
+#bookmarks-tools
+    button
+        color: tools-color
+#bookmarks-tools-search
+    width: 25%
+#tags-cloud
+    display: none
+    color: tools-color
+    text-align: center
+    .tag:hover
+        color: tools-comp-color
+        cursor: pointer
+
+#bookmarks
+    ul 
+        list-style: none
+
+        .bookmark
+            white-space: nowrap
+            margin-bottom: 1em
+            div
+                display: inline-block
+
+            .buttons
+                vertical-align: top
+            .bookmark-delete
+                display: none
+                color: bad-color
+                margin: 0
+                padding: 0
+
+            .bookmark-link
+                margin-left: 1em
+                min-width: 90%
+
+                .bookmark-title
+                    display: block
+                .bookmark-url
+                    display: block
+                    opacity: .5
+                a
+                    display: block
+                    width: 80%
+                    white-space: nowrap
+                    overflow: hidden
+                    text-overflow: ellipsis
+                    &:hover
+                        white-space: normal
+
+            .bookmark-description
+                margin-left: 1.5em
+                display: block
+                &.box
+                    padding-top: .2em
+                    padding-bottom: .2em
+                    background: #222226
+                    color: #8c95a6
+                .bookmark-tags
+                    color: #a69c8b
+                    margin-bottom: .2em
