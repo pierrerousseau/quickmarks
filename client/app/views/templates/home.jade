@@ -17,34 +17,35 @@
 
     form#bookmark-add(class="box")
         #bookmark-add-title(
-            title="Show the full form"
+            title="Toggle full bookmark form"
         ) Bookmark a link
-
         input#bookmark-add-link-url(
             placeholder="url"
         )
-        input#bookmark-add-link-title(
-            placeholder="title"
-        )
-        textarea#bookmark-add-link-description(
-            placeholder="description"
-        )
-        input#bookmark-add-link-tags(
-            placeholder="tags, separated by ','"
-        )
-        #bookmark-add-buttons
-            button#bookmark-add-add(
-                class="glyphicon glyphicon-ok-circle",
-                title="Save the bookmark"
+        #bookmark-add-full
+            input#bookmark-add-link-title(
+                placeholder="title"
             )
-            button#bookmark-add-clean(
-                class="glyphicon glyphicon-remove-circle",
-                title="Clear the form"
+            textarea#bookmark-add-link-description(
+                placeholder="description"
             )
+            input#bookmark-add-link-tags(
+                placeholder="tags, separated by ','"
+            )
+            #bookmark-add-buttons
+                button#bookmark-add-add(
+                    class="glyphicon glyphicon-ok-circle",
+                    title="Save the bookmark"
+                )
+                button#bookmark-add-clean(
+                    class="glyphicon glyphicon-remove-circle",
+                    title="Clear the form"
+                )
                             
     #bookmarks(class="box")
         #bookmarks-tools
             input#bookmarks-tools-search(
+                class="search"
                 placeholder="search"
             )
             button#bookmarks-tools-clean(
@@ -56,11 +57,11 @@
                 title="Toggle tags cloud"
             )
             button#bookmarks-tools-sort(
-                class="glyphicon glyphicon-sort",
+                class="glyphicon glyphicon-sort sort",
                 title="Sort links",
-                data-sort="title"
+                data-sort="bookmark-title"
             )
 
             #tags-cloud 
 
-        ul
+        ul.list
