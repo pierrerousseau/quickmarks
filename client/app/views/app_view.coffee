@@ -7,17 +7,19 @@ module.exports = class AppView extends View
     el: "body.application"
 
     events:
-        "click form .create": "bookmarkLink"
-        "keyup form .url-field": "showForm"
-        "click form .url-field": "showForm"
-        "click form .title": "toggleForm"
-        "click form .clean": "cleanForm"
-        "click button.import": "import"
-        "click button.export": "export"
-        "change #bookmarks-file": "uploadFile"
+        "click #bookmark-add-title": "toggleForm"
+        "keyup #bookmark-add-link-url": "showForm"
+        "click #bookmark-add-link-url": "showForm"
+        "click #bookmark-add-clean": "cleanForm"
+        "submit #bookmark-add": "bookmarkLink"
+
+        "click #bookmarks-exchange-import": "import"
+        "click #bookmarks-exchange-export": "export"
+        "change #bookmarks-exchange-file": "uploadFile"
+
         "click .tag": "tagClick"
-        "click .tools .clean": "cleanSearch"
-        "click #tags-cloud h4": "toggleCloud"
+        "click #bookmarks-tools-clean": "cleanSearch"
+        "click #bookmarks-tools-tags": "toggleCloud"
 
     template: ->
         require "./templates/home"
@@ -26,15 +28,15 @@ module.exports = class AppView extends View
         @router = CozyApp.Routers.AppRouter = new AppRouter()
 
     toggleCloud: ->
-        $("#tags-cloud span").toggle()
+        $("#tags-cloud").toggle()
 
     cleanSearch: ->
-        $("input.search").val("")
+        $("#bookmarks-tools-search").val("")
         window.featureList.search()
 
     tagClick: (evt) ->
         tag = $(evt.currentTarget).text()
-        $("input.search").val(tag)
+        $("#bookmarks-tools-search").val(tag)
         window.featureList.search(tag)
 
     setTagCloud: ->
@@ -73,62 +75,65 @@ module.exports = class AppView extends View
             success: =>
                 @bookmarksView.$el.find('em').remove()
                 window.sortOptions = {
-                    "valueNames": ["title", "url", "tags", "description"] }
-                window.featureList = new List("bookmarks-list",
+                    "valueNames": ["bookmark-title", "bookmark-url", "bookmark-tags", "bookmark-description"] }
+                window.featureList = new List("bookmarks",
                                               window.sortOptions)
                 View.log "bookmarks loaded"
                 @setTagCloud()
 
-    showForm: (evt) ->
-        $container = $ "form .full-form"
-        title     = $(evt.target).parents ".title"
-        if !$container.is ":visible"
-            title.click()
+    toggleForm: (evt) ->
+        $container = $ "#bookmark-add-full"
+        $container.toggle "slow"
+
         false
 
-    toggleForm: (evt) ->
-        $container = $ "form .full-form"
-        $title     = $ evt.currentTarget
-        $container.toggle "slow", () ->
-            if $container.is ":visible"
-                $title.attr "title", "click to hide the detailed form"
-            else
-                $title.attr "title", "click to show the full form"
+    showForm: (evt) ->
+        $container = $ "#bookmark-add-full"
+        if !$container.is ":visible"
+            @toggleForm()
+
         false
 
     cleanForm: (evt) ->
-        $form = $ "form"
+        $form   = $ "form"
         $inputs = $form.find "input, textarea"
         $inputs.val ""
+
         false
 
     bookmarkLink: (evt) ->
-        url   = $('.url-field').val()
-        title = $('.title-field').val()
-        tags  = $('.tags-field').val().split(',').map (tag) -> $.trim(tag)
-        description = $('.description-field').val()
+        evt.preventDefault()
+
+        url         = $("#bookmark-add-link-url").val()
+        title       = $("#bookmark-add-link-title").val()
+        description = $("#bookmark-add-link-description").val()
+        # FixMe: ',' to constant
+        tags        = $("#bookmark-add-link-tags").val().split(',').map (tag) -> $.trim(tag)
 
         if url?.length > 0
-            bookObj =
-                title: title
-                url: url
-                tags: tags
-                description: description
-            bookmark = new Bookmark bookObj
+            bookmark = new Bookmark
+                "title": title
+                "url": url
+                "tags": tags
+                "description": description
             @bookmarksView.collection.create bookmark,
-                success: =>
+                "success": =>
                     @cleanForm()
-                    $("form .title").click()
+                    @toggleForm()
+                    # FixMe: do this on bookmark rendering
                     $(".bookmark:first").addClass "new"
+                    # FixMe: create a log class
                     View.log "" + (title || url) + " added"
-                error: =>
+            console.log(bookmark)
+                "error": =>
                     View.error "Server error occured, " +
                                "bookmark was not saved"
         else
             View.error "Url field is required"
+
         false
 
-    addBookmarkFromFile: (link) ->
+    addBookmarkFromFile: (link, others) ->
         $link = $ link
         if !!$link.attr("href").indexOf("place") and not $link.attr("feedurl")
             url         = $link.attr "href"
@@ -138,46 +143,54 @@ module.exports = class AppView extends View
             if next.is("dd")
                 description = next.text()
 
-            bookObj =
+            bookmark = new Bookmark
                 title: title
                 url: url
                 tags: []
                 description: description
-            bookmark = new Bookmark bookObj
             @bookmarksView.collection.create bookmark,
                 success: =>
-                    imported = $(".imported")
+                    imported = $("#bookmarks-exchange-done")
                     if imported.text()
                         imported.text(parseInt(imported.text()) + 1)
                     else
                         imported.text(1)
+                    @addBookmarkFromFile others[0], others[1..]
+
                 error: =>
-                    notImported = $(".import-failed")
+                    notImported = $("#bookmarks-exchange-failed")
                     if notImported.text()
                         notImported.text(parseInt(notImported.text()) + 1)
                     else
                         notImported.text(1)
+                    @addBookmarkFromFile others[0], others[1..]
 
     addBookmarksFromFile: (file) ->
+        importButton = $("#bookmarks-exchange-import")
         loaded = $(file)
         links = loaded.find "dt a"
-        for link in links
-            @addBookmarkFromFile link
+        @addBookmarkFromFile links[0], links[1..]
+        importButton.removeClass("doing")
 
     uploadFile: (evt) ->
-        file = evt.target.files[0]
-        if file.type != "text/html"
-            View.error "This file cannot be imported"
-            return
+        importButton = $("#bookmarks-exchange-import")
+        if importButton.hasClass("doing")
+            View.error("I'm working!")
+        else
+            file = evt.target.files[0]
+            if file.type != "text/html"
+                View.error "This file cannot be imported"
+                return
+            importButton.addClass("doing")
 
-        reader = new FileReader()
-        reader.onload = (evt) => @addBookmarksFromFile(evt.target.result)
-        reader.readAsText(file)
+            reader = new FileReader()
+            reader.onload = (evt) => @addBookmarksFromFile(evt.target.result)
+            reader.readAsText(file)
 
     import: (evt) ->
         View.confirm "Import html bookmarks file exported by " +
                      "firefox or chrome",
-            () -> $("#bookmarks-file").click()
+            () -> $("#bookmarks-exchange-file").click()
 
     export: (evt) ->
         window.location = "export"

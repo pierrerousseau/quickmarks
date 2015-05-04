@@ -263,8 +263,17 @@ textarea {
   margin: 0.1em;
   padding: 0;
 }
+#bookmarks-exchange button.doing {
+  color: #7d5f5e;
+}
 #bookmarks-exchange-file {
   display: none;
+}
+#bookmarks-exchange-done {
+  color: #4cc417;
+}
+#bookmarks-exchange-failed {
+  color: #9118c4;
 }
 #bookmark-add textarea,
 #bookmark-add input {
@@ -273,7 +282,7 @@ textarea {
 #bookmark-add-title {
   font-size: 2em;
   font-weight: bold;
-  margin-bottom: 1em;
+  margin-bottom: 0.2em;
 }
 #bookmark-add-title {
   cursor: pointer;
@@ -290,10 +299,7 @@ textarea {
 #bookmark-add-clean {
   color: #9118c4;
 }
-#bookmark-add-link-title,
-#bookmark-add-link-description,
-#bookmark-add-link-tags,
-#bookmark-add-buttons {
+#bookmark-add-full {
   display: none;
 }
 #bookmarks-tools button {
@@ -314,9 +320,17 @@ textarea {
 #bookmarks ul {
   list-style: none;
 }
+#bookmarks ul li {
+  padding: 0.1em;
+}
 #bookmarks ul .bookmark {
+  opacity: 0.9;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
+  filter: alpha(opacity=90);
   white-space: nowrap;
-  margin-bottom: 1em;
+  margin-bottom: 0.1em;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 #bookmarks ul .bookmark div {
   display: inline-block;
@@ -325,7 +339,7 @@ textarea {
   vertical-align: top;
 }
 #bookmarks ul .bookmark .bookmark-delete {
-  display: none;
+  visibility: hidden;
   color: #9118c4;
   margin: 0;
   padding: 0;
@@ -367,6 +381,60 @@ textarea {
 #bookmarks ul .bookmark .bookmark-description .bookmark-tags {
   color: #a69c8b;
   margin-bottom: 0.2em;
+}
+#bookmarks ul .bookmark.new {
+  background: #3d3c3a;
+}
+#bookmarks ul .bookmark.new a,
+#bookmarks ul .bookmark.new a:visited {
+  color: #05806d;
+}
+#bookmarks ul .bookmark.new .bookmark-description.box {
+  border-color: #3d3c3a;
+  background: #3d3c3a;
+  color: #05806d;
+}
+#bookmarks ul .bookmark.new .bookmark-tags {
+  color: #05806d;
+}
+#bookmarks ul .bookmark.new .bookmark-link .bookmark-url {
+  opacity: 0.9;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
+  filter: alpha(opacity=90);
+}
+#bookmarks ul .bookmark.new .bookmark-delete {
+  color: #05806d;
+}
+#bookmarks ul .bookmark.to-delete {
+  background: #800517;
+}
+#bookmarks ul .bookmark.to-delete a,
+#bookmarks ul .bookmark.to-delete a:visited {
+  color: #05806d;
+}
+#bookmarks ul .bookmark.to-delete .bookmark-description.box {
+  border-color: #800517;
+  background: #800517;
+  color: #05806d;
+}
+#bookmarks ul .bookmark.to-delete .bookmark-tags {
+  color: #05806d;
+}
+#bookmarks ul .bookmark.to-delete .bookmark-link .bookmark-url {
+  opacity: 0.9;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
+  filter: alpha(opacity=90);
+}
+#bookmarks ul .bookmark.to-delete .bookmark-delete {
+  color: #05806d;
+}
+#bookmarks ul .bookmark:hover {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+#bookmarks ul .bookmark:hover .bookmark-delete {
+  visibility: visible;
 }
 
 .ui-pnotify{top:25px;right:25px;position:absolute;height:auto;z-index:9999}html>body>.ui-pnotify{position:fixed}.ui-pnotify .ui-pnotify-shadow{-webkit-box-shadow:0 2px 10px rgba(50,50,50,.5);-moz-box-shadow:0 2px 10px rgba(50,50,50,.5);box-shadow:0 2px 10px rgba(50,50,50,.5)}.ui-pnotify-container{background-position:0 0;padding:.8em;height:100%;margin:0}.ui-pnotify-sharp{-webkit-border-radius:0;-moz-border-radius:0;border-radius:0}.ui-pnotify-title{display:block;margin-bottom:.4em;margin-top:0}.ui-pnotify-text{display:block}.ui-pnotify-icon,.ui-pnotify-icon span{display:block;float:left;margin-right:.2em}.ui-pnotify.stack-bottomleft,.ui-pnotify.stack-topleft{left:25px;right:auto}.ui-pnotify.stack-bottomleft,.ui-pnotify.stack-bottomright{bottom:25px;top:auto}.ui-pnotify-closer,.ui-pnotify-sticker{float:right;margin-left:.2em}.ui-pnotify-history-container{position:absolute;top:0;right:18px;width:70px;border-top:none;padding:0;-webkit-border-top-left-radius:0;-moz-border-top-left-radius:0;border-top-left-radius:0;-webkit-border-top-right-radius:0;-moz-border-top-right-radius:0;border-top-right-radius:0;z-index:10000}.ui-pnotify-history-container.ui-pnotify-history-fixed{position:fixed}.ui-pnotify-history-container .ui-pnotify-history-header{padding:2px;text-align:center}.ui-pnotify-history-container button{cursor:pointer;display:block;width:100%}.ui-pnotify-history-container .ui-pnotify-history-pulldown{display:block;margin:0 auto}

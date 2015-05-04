@@ -26,7 +26,11 @@ tools-color  = #5e7d7e
 tools-comp-color = #7d5f5e
 
 good-color = #4cc417
+good-back  = #3d3c3a
+good-link-color = #05806d
 bad-color  = #9118c4
+bad-back   = #800517
+bad-link-color = #05806d
 
 title-font-size = 2em
 title-font-weight = bold
@@ -88,9 +92,18 @@ textarea
     button
         margin: .1em
         padding: 0
+        &.doing
+            color: tools-comp-color
 
 #bookmarks-exchange-file
     display: none
+
+#bookmarks-exchange-done
+    color: good-color
+#bookmarks-exchange-failed
+    color: bad-color
+
+
 
 #bookmark-add
     textarea
@@ -100,7 +113,7 @@ textarea
 #bookmark-add-title
     font-size: title-font-size
     font-weight: title-font-weight
-    margin-bottom: 1em
+    margin-bottom: .2em
 
 #bookmark-add-title
     cursor: pointer
@@ -117,10 +130,7 @@ textarea
 #bookmark-add-clean
     color: bad-color
 
-#bookmark-add-link-title
-#bookmark-add-link-description
-#bookmark-add-link-tags
-#bookmark-add-buttons
+#bookmark-add-full
     display: none
 
 
@@ -140,21 +150,24 @@ textarea
 #bookmarks
     ul 
         list-style: none
+        li
+            padding: .1em
 
         .bookmark
+            opacity: .9
             white-space: nowrap
-            margin-bottom: 1em
+            margin-bottom: .1em
+            border-radius: box-radius
             div
                 display: inline-block
 
             .buttons
                 vertical-align: top
             .bookmark-delete
-                display: none
+                visibility: hidden
                 color: bad-color
                 margin: 0
                 padding: 0
-
             .bookmark-link
                 margin-left: 1em
                 min-width: 90%
@@ -184,3 +197,42 @@ textarea
                 .bookmark-tags
                     color: bookmark-tag-color
                     margin-bottom: .2em
+
+            &.new
+                background: good-back
+                a
+                a:visited
+                    color: good-link-color
+                .bookmark-description
+                    &.box
+                        border-color: good-back
+                        background: good-back
+                        color: good-link-color
+                .bookmark-tags
+                    color: good-link-color
+                .bookmark-link
+                    .bookmark-url
+                         opacity: .9
+                .bookmark-delete
+                    color: good-link-color
+            &.to-delete
+                background: bad-back
+                a
+                a:visited
+                    color: bad-link-color
+                .bookmark-description
+                    &.box
+                        border-color: bad-back
+                        background: bad-back
+                        color: bad-link-color
+                .bookmark-tags
+                    color: bad-link-color
+                .bookmark-link
+                    .bookmark-url
+                         opacity: .9
+                .bookmark-delete
+                    color: bad-link-color
+            &:hover
+                opacity: 1
+                .bookmark-delete
+                    visibility: visible

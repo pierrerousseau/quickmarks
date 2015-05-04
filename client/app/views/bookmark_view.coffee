@@ -5,9 +5,9 @@ module.exports = class BookmarkView extends View
     tagName: "li"
 
     events:
-        "click .delete": "deleteBookmark"
-        "mouseenter .delete": "setToDelete"
-        "mouseleave .delete": "setToNotDelete"
+        "click .bookmark-delete": "deleteBookmark"
+        "mouseenter .bookmark-delete": "setToDelete"
+        "mouseleave .bookmark-delete": "setToNotDelete"
 
     constructor: (@model) ->
         super()
@@ -27,17 +27,16 @@ module.exports = class BookmarkView extends View
         @$el.removeClass("to-delete")
 
     deleteBookmark: ->
-        title = @$el.find(".title").html()
-        $(".url-field").val(@$el.find(".title a").attr("href"))
-        $(".title-field").val(@$el.find(".title a").text())
-        $(".tags-field").val(@$el.find(".tags span").text())
-        $(".description-field").val(@$el.find(".description p").text())
-        $(".full-form").show()
+        title = @$el.find(".bookmark-title").html()
+        $("#bookmark-add-link-url").val(@$el.find(".bookmark-title a").attr("href"))
+        $("#bookmark-add-link-title").val(@$el.find(".bookmark-title a").text())
+        $("#bookmark-add-link-tags").val(@$el.find(".bookmark-tags span").text())
+        $("#bookmark-add-link-description").val(@$el.find(".bookmark-description p").text())
+        $("#bookmark-add-full").show()
         @model.destroy
             success: =>
                 @destroy()
-                window.featureList.remove("title", title)
+                window.featureList.remove("bookmark-title", title)
                 View.log "" + title + " removed and placed in form"
             error: =>
                 View.error "Server error occured, bookmark was not deleted."
-                @$('.delete-button').html "delete"

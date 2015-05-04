@@ -254,6 +254,7 @@ module.exports = View = (function(superClass) {
         "icon": false,
         "opacity": .8,
         "delay": 2000,
+        "type": "success",
         "buttons": {
           "sticker": false
         }
@@ -497,17 +498,17 @@ module.exports = AppView = (function(superClass) {
   AppView.prototype.el = "body.application";
 
   AppView.prototype.events = {
-    "click form .create": "bookmarkLink",
-    "keyup form .url-field": "showForm",
-    "click form .url-field": "showForm",
-    "click form .title": "toggleForm",
-    "click form .clean": "cleanForm",
-    "click button.import": "import",
-    "click button.export": "export",
-    "change #bookmarks-file": "uploadFile",
+    "click #bookmark-add-title": "toggleForm",
+    "keyup #bookmark-add-link-url": "showForm",
+    "click #bookmark-add-link-url": "showForm",
+    "click #bookmark-add-clean": "cleanForm",
+    "submit #bookmark-add": "bookmarkLink",
+    "click #bookmarks-exchange-import": "import",
+    "click #bookmarks-exchange-export": "export",
+    "change #bookmarks-exchange-file": "uploadFile",
     "click .tag": "tagClick",
-    "click .tools .clean": "cleanSearch",
-    "click #tags-cloud h4": "toggleCloud"
+    "click #bookmarks-tools-clean": "cleanSearch",
+    "click #bookmarks-tools-tags": "toggleCloud"
   };
 
   AppView.prototype.template = function() {
@@ -519,18 +520,18 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.toggleCloud = function() {
-    return $("#tags-cloud span").toggle();
+    return $("#tags-cloud").toggle();
   };
 
   AppView.prototype.cleanSearch = function() {
-    $("input.search").val("");
+    $("#bookmarks-tools-search").val("");
     return window.featureList.search();
   };
 
   AppView.prototype.tagClick = function(evt) {
     var tag;
     tag = $(evt.currentTarget).text();
-    $("input.search").val(tag);
+    $("#bookmarks-tools-search").val(tag);
     return window.featureList.search(tag);
   };
 
@@ -573,9 +574,9 @@ module.exports = AppView = (function(superClass) {
         return function() {
           _this.bookmarksView.$el.find('em').remove();
           window.sortOptions = {
-            "valueNames": ["title", "url", "tags", "description"]
+            "valueNames": ["bookmark-title", "bookmark-url", "bookmark-tags", "bookmark-description"]
           };
-          window.featureList = new List("bookmarks-list", window.sortOptions);
+          window.featureList = new List("bookmarks", window.sortOptions);
           View.log("bookmarks loaded");
           return _this.setTagCloud();
         };
@@ -583,27 +584,19 @@ module.exports = AppView = (function(superClass) {
     });
   };
 
-  AppView.prototype.showForm = function(evt) {
-    var $container, title;
-    $container = $("form .full-form");
-    title = $(evt.target).parents(".title");
-    if (!$container.is(":visible")) {
-      title.click();
-    }
+  AppView.prototype.toggleForm = function(evt) {
+    var $container;
+    $container = $("#bookmark-add-full");
+    $container.toggle("slow");
     return false;
   };
 
-  AppView.prototype.toggleForm = function(evt) {
-    var $container, $title;
-    $container = $("form .full-form");
-    $title = $(evt.currentTarget);
-    $container.toggle("slow", function() {
-      if ($container.is(":visible")) {
-        return $title.attr("title", "click to hide the detailed form");
-      } else {
-        return $title.attr("title", "click to show the full form");
-      }
-    });
+  AppView.prototype.showForm = function(evt) {
+    var $container;
+    $container = $("#bookmark-add-full");
+    if (!$container.is(":visible")) {
+      this.toggleForm();
+    }
     return false;
   };
 
@@ -616,31 +609,33 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.bookmarkLink = function(evt) {
-    var bookObj, bookmark, description, tags, title, url;
-    url = $('.url-field').val();
-    title = $('.title-field').val();
-    tags = $('.tags-field').val().split(',').map(function(tag) {
+    var bookmark, description, tags, title, url;
+    evt.preventDefault();
+    url = $("#bookmark-add-link-url").val();
+    title = $("#bookmark-add-link-title").val();
+    description = $("#bookmark-add-link-description").val();
+    tags = $("#bookmark-add-link-tags").val().split(',').map(function(tag) {
       return $.trim(tag);
     });
-    description = $('.description-field').val();
     if ((url != null ? url.length : void 0) > 0) {
-      bookObj = {
-        title: title,
-        url: url,
-        tags: tags,
-        description: description
-      };
-      bookmark = new Bookmark(bookObj);
+      bookmark = new Bookmark({
+        "title": title,
+        "url": url,
+        "tags": tags,
+        "description": description
+      });
       this.bookmarksView.collection.create(bookmark, {
-        success: (function(_this) {
+        "success": (function(_this) {
           return function() {
             _this.cleanForm();
-            $("form .title").click();
+            _this.toggleForm();
             $(".bookmark:first").addClass("new");
             return View.log("" + (title || url) + " added");
           };
-        })(this),
-        error: (function(_this) {
+        })(this)
+      });
+      console.log(bookmark)({
+        "error": (function(_this) {
           return function() {
             return View.error("Server error occured, " + "bookmark was not saved");
           };
@@ -652,8 +647,8 @@ module.exports = AppView = (function(superClass) {
     return false;
   };
 
-  AppView.prototype.addBookmarkFromFile = function(link) {
-    var $link, bookObj, bookmark, description, next, title, url;
+  AppView.prototype.addBookmarkFromFile = function(link, others) {
+    var $link, bookmark, description, next, title, url;
     $link = $(link);
     if (!!$link.attr("href").indexOf("place") && !$link.attr("feedurl")) {
       url = $link.attr("href");
@@ -663,34 +658,35 @@ module.exports = AppView = (function(superClass) {
       if (next.is("dd")) {
         description = next.text();
       }
-      bookObj = {
+      bookmark = new Bookmark({
         title: title,
         url: url,
         tags: [],
         description: description
-      };
-      bookmark = new Bookmark(bookObj);
+      });
       return this.bookmarksView.collection.create(bookmark, {
         success: (function(_this) {
           return function() {
             var imported;
-            imported = $(".imported");
+            imported = $("#bookmarks-exchange-done");
             if (imported.text()) {
-              return imported.text(parseInt(imported.text()) + 1);
+              imported.text(parseInt(imported.text()) + 1);
             } else {
-              return imported.text(1);
+              imported.text(1);
             }
+            return _this.addBookmarkFromFile(others[0], others.slice(1));
           };
         })(this),
         error: (function(_this) {
           return function() {
             var notImported;
-            notImported = $(".import-failed");
+            notImported = $("#bookmarks-exchange-failed");
             if (notImported.text()) {
-              return notImported.text(parseInt(notImported.text()) + 1);
+              notImported.text(parseInt(notImported.text()) + 1);
             } else {
-              return notImported.text(1);
+              notImported.text(1);
             }
+            return _this.addBookmarkFromFile(others[0], others.slice(1));
           };
         })(this)
       });
@@ -698,36 +694,39 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.addBookmarksFromFile = function(file) {
-    var i, len, link, links, loaded, results;
+    var importButton, links, loaded;
+    importButton = $("#bookmarks-exchange-import");
     loaded = $(file);
     links = loaded.find("dt a");
-    results = [];
-    for (i = 0, len = links.length; i < len; i++) {
-      link = links[i];
-      results.push(this.addBookmarkFromFile(link));
-    }
-    return results;
+    this.addBookmarkFromFile(links[0], links.slice(1));
+    return importButton.removeClass("doing");
   };
 
   AppView.prototype.uploadFile = function(evt) {
-    var file, reader;
-    file = evt.target.files[0];
-    if (file.type !== "text/html") {
-      View.error("This file cannot be imported");
-      return;
+    var file, importButton, reader;
+    importButton = $("#bookmarks-exchange-import");
+    if (importButton.hasClass("doing")) {
+      return View.error("I'm working!");
+    } else {
+      file = evt.target.files[0];
+      if (file.type !== "text/html") {
+        View.error("This file cannot be imported");
+        return;
+      }
+      importButton.addClass("doing");
+      reader = new FileReader();
+      reader.onload = (function(_this) {
+        return function(evt) {
+          return _this.addBookmarksFromFile(evt.target.result);
+        };
+      })(this);
+      return reader.readAsText(file);
     }
-    reader = new FileReader();
-    reader.onload = (function(_this) {
-      return function(evt) {
-        return _this.addBookmarksFromFile(evt.target.result);
-      };
-    })(this);
-    return reader.readAsText(file);
   };
 
   AppView.prototype["import"] = function(evt) {
     return View.confirm("Import html bookmarks file exported by " + "firefox or chrome", function() {
-      return $("#bookmarks-file").click();
+      return $("#bookmarks-exchange-file").click();
     });
   };
 
@@ -756,9 +755,9 @@ module.exports = BookmarkView = (function(superClass) {
   BookmarkView.prototype.tagName = "li";
 
   BookmarkView.prototype.events = {
-    "click .delete": "deleteBookmark",
-    "mouseenter .delete": "setToDelete",
-    "mouseleave .delete": "setToNotDelete"
+    "click .bookmark-delete": "deleteBookmark",
+    "mouseenter .bookmark-delete": "setToDelete",
+    "mouseleave .bookmark-delete": "setToNotDelete"
   };
 
   function BookmarkView(model) {
@@ -787,24 +786,23 @@ module.exports = BookmarkView = (function(superClass) {
 
   BookmarkView.prototype.deleteBookmark = function() {
     var title;
-    title = this.$el.find(".title").html();
-    $(".url-field").val(this.$el.find(".title a").attr("href"));
-    $(".title-field").val(this.$el.find(".title a").text());
-    $(".tags-field").val(this.$el.find(".tags span").text());
-    $(".description-field").val(this.$el.find(".description p").text());
-    $(".full-form").show();
+    title = this.$el.find(".bookmark-title").html();
+    $("#bookmark-add-link-url").val(this.$el.find(".bookmark-title a").attr("href"));
+    $("#bookmark-add-link-title").val(this.$el.find(".bookmark-title a").text());
+    $("#bookmark-add-link-tags").val(this.$el.find(".bookmark-tags span").text());
+    $("#bookmark-add-link-description").val(this.$el.find(".bookmark-description p").text());
+    $("#bookmark-add-full").show();
     return this.model.destroy({
       success: (function(_this) {
         return function() {
           _this.destroy();
-          window.featureList.remove("title", title);
+          window.featureList.remove("bookmark-title", title);
           return View.log("" + title + " removed and placed in form");
         };
       })(this),
       error: (function(_this) {
         return function() {
-          View.error("Server error occured, bookmark was not deleted.");
-          return _this.$('.delete-button').html("delete");
+          return View.error("Server error occured, bookmark was not deleted.");
         };
       })(this)
     });
@@ -911,7 +909,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><div id="bookmarks-exchange"><input id="bookmarks-exchange-file" type="file" name="exchange-file"/><button id="bookmarks-exchange-import" title="Import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload"></button><button id="bookmarks-exchange-export" title="Export bookmarks in html" class="glyphicon glyphicon-download"></button><div id="bookmarks-exchange-done"></div><div id="bookmarks-exchange-failed"></div></div><form id="bookmark-add" class="box"><div id="bookmark-add-title" title="Show the full form">Bookmark a link</div><input id="bookmark-add-link-url" placeholder="url"/><input id="bookmark-add-link-title" placeholder="title"/><textarea id="bookmark-add-link-description" placeholder="description"></textarea><input id="bookmark-add-link-tags" placeholder="tags, separated by \',\'"/><div id="bookmark-add-buttons"><button id="bookmark-add-add" title="Save the bookmark" class="glyphicon glyphicon-ok-circle"></button><button id="bookmark-add-clean" title="Clear the form" class="glyphicon glyphicon-remove-circle"></button></div></form><div id="bookmarks" class="box"><div id="bookmarks-tools"><input id="bookmarks-tools-search" placeholder="search"/><button id="bookmarks-tools-clean" title="Clear search field" class="glyphicon glyphicon-remove-circle"></button><button id="bookmarks-tools-tags" title="Toggle tags cloud" class="glyphicon glyphicon-tags"></button><button id="bookmarks-tools-sort" title="Sort links" data-sort="title" class="glyphicon glyphicon-sort"></button><div id="tags-cloud"> </div></div><ul></ul></div></div>');
+buf.push('<div id="content"><div id="bookmarks-exchange"><input id="bookmarks-exchange-file" type="file" name="exchange-file"/><button id="bookmarks-exchange-import" title="Import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload"></button><button id="bookmarks-exchange-export" title="Export bookmarks in html" class="glyphicon glyphicon-download"></button><div id="bookmarks-exchange-done"></div><div id="bookmarks-exchange-failed"></div></div><form id="bookmark-add" class="box"><div id="bookmark-add-title" title="Toggle full bookmark form">Bookmark a link</div><input id="bookmark-add-link-url" placeholder="url"/><div id="bookmark-add-full"><input id="bookmark-add-link-title" placeholder="title"/><textarea id="bookmark-add-link-description" placeholder="description"></textarea><input id="bookmark-add-link-tags" placeholder="tags, separated by \',\'"/><div id="bookmark-add-buttons"><button id="bookmark-add-add" title="Save the bookmark" class="glyphicon glyphicon-ok-circle"></button><button id="bookmark-add-clean" title="Clear the form" class="glyphicon glyphicon-remove-circle"></button></div></div></form><div id="bookmarks" class="box"><div id="bookmarks-tools"><input id="bookmarks-tools-search" placeholder="search" class="search"/><button id="bookmarks-tools-clean" title="Clear search field" class="glyphicon glyphicon-remove-circle"></button><button id="bookmarks-tools-tags" title="Toggle tags cloud" class="glyphicon glyphicon-tags"></button><button id="bookmarks-tools-sort" title="Sort links" data-sort="bookmark-title" class="glyphicon glyphicon-sort sort"></button><div id="tags-cloud"> </div></div><ul class="list"></ul></div></div>');
 }
 return buf.join("");
 };

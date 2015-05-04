@@ -55,6 +55,7 @@ module.exports = class View extends Backbone.View
             "icon": false
             "opacity": .8
             "delay": 2000
+            "type": "success"
             "buttons":
                 "sticker": false
 
