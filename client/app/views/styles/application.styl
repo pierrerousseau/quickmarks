@@ -137,6 +137,7 @@ textarea
 #bookmarks-tools
     button
         color: tools-color
+    margin-bottom: .5em
 #bookmarks-tools-search
     width: 25%
 #tags-cloud
@@ -150,6 +151,7 @@ textarea
 #bookmarks
     ul 
         list-style: none
+        padding-left: 1em 
         li
             padding: .1em
 
@@ -170,6 +172,7 @@ textarea
                 padding: 0
             .bookmark-link
                 margin-left: 1em
+                margin-bottom: .5em
                 min-width: 90%
 
                 .bookmark-title
@@ -178,16 +181,19 @@ textarea
                     display: block
                     opacity: .5
                 a
+                a:visited
                     display: block
-                    width: 80%
+                    width: 70%
                     white-space: nowrap
                     overflow: hidden
                     text-overflow: ellipsis
                     &:hover
+                        width: 100%
                         white-space: normal
+                        overflow: initial
 
             .bookmark-description
-                margin-left: 1.5em
+                margin-left: 2em
                 display: block
                 &.box
                     padding-top: .2em

@@ -302,6 +302,9 @@ textarea {
 #bookmark-add-full {
   display: none;
 }
+#bookmarks-tools {
+  margin-bottom: 0.5em;
+}
 #bookmarks-tools button {
   color: #5e7d7e;
 }
@@ -319,6 +322,7 @@ textarea {
 }
 #bookmarks ul {
   list-style: none;
+  padding-left: 1em;
 }
 #bookmarks ul li {
   padding: 0.1em;
@@ -346,6 +350,7 @@ textarea {
 }
 #bookmarks ul .bookmark .bookmark-link {
   margin-left: 1em;
+  margin-bottom: 0.5em;
   min-width: 90%;
 }
 #bookmarks ul .bookmark .bookmark-link .bookmark-title {
@@ -357,19 +362,23 @@ textarea {
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   filter: alpha(opacity=50);
 }
-#bookmarks ul .bookmark .bookmark-link a {
+#bookmarks ul .bookmark .bookmark-link a,
+#bookmarks ul .bookmark .bookmark-link a:visited {
   display: block;
-  width: 80%;
+  width: 70%;
   white-space: nowrap;
   overflow: hidden;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
-#bookmarks ul .bookmark .bookmark-link a:hover {
+#bookmarks ul .bookmark .bookmark-link a:hover,
+#bookmarks ul .bookmark .bookmark-link a:visited:hover {
+  width: 100%;
   white-space: normal;
+  overflow: initial;
 }
 #bookmarks ul .bookmark .bookmark-description {
-  margin-left: 1.5em;
+  margin-left: 2em;
   display: block;
 }
 #bookmarks ul .bookmark .bookmark-description.box {
