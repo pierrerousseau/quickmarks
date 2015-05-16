@@ -1,7 +1,7 @@
 americano = require 'americano'
 
 port = process.env.PORT || 31435
-americano.start name: 'Bookmark', port: port, (err, app, server) ->
+americano.start name: 'Quickmarks', port: port, (err, app, server) ->
     Bookmark = americano.getModel 'Bookmark',
         'title': type: String
         'url': type: String
