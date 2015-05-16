@@ -1,7 +1,7 @@
 /*
 ListJS Beta 0.2.0
 By Jonny Strömberg (www.jonnystromberg.com, www.listjs.com)
-modified version for cozy-bookmarks (https://github.com/Piour/cozy-bookmarks)
+modified version for quickmarks (https://github.com/pierrerousseau/quickmarks.git)
 
 OBS. The API is not frozen. It MAY change!
 
