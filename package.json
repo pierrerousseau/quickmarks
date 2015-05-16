@@ -1,5 +1,5 @@
 {
-  "name": "cozy-bookmarks",
+  "name": "quickmarks",
   "version": "0.9.6",
   "engines": [
     "node = 0.8.x"
@@ -7,7 +7,7 @@
   "description": "Manage your bookmark from your Cozy!",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Piour/cozy-bookmarks.git"
+    "url": "https://github.com/pierrerousseau/quickmarks.git"
   },
   "main": "server.coffee",
   "dependencies": {
