@@ -391,6 +391,9 @@ textarea {
   color: #a69c8b;
   margin-bottom: 0.2em;
 }
+#bookmarks ul .bookmark .bookmark-description p {
+  white-space: normal;
+}
 #bookmarks ul .bookmark.new {
   background: #3d3c3a;
 }
