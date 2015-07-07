@@ -8,4 +8,4 @@ module.exports = Bookmark = americano.getModel 'Bookmark',
     'created': type: Date, default: Date
 
 Bookmark.all = (params, callback) ->
-    Bookmark.request "all", params, callback
+    Bookmark.request "byDate", params, callback
