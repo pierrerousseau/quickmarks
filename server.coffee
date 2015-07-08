@@ -8,7 +8,7 @@ americano.start name: 'Quickmarks', port: port, (err, app, server) ->
         'tags': type: JSON
         'description': type: String
         'created': type: Date, default: Date
-    Bookmark.request "all", (err, bookmarks) ->
+    Bookmark.request "byDate", (err, bookmarks) ->
         for bookmark in bookmarks
             if typeof bookmark.tags is "string"
                 tags = bookmark.tags.split(",")
