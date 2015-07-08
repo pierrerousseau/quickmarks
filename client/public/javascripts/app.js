@@ -466,7 +466,7 @@ module.exports = AppRouter = (function(superClass) {
   }
 
   AppRouter.prototype.routes = {
-    '': function() {}
+    "": function() {}
   };
 
   return AppRouter;
@@ -516,7 +516,11 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.initialize = function() {
-    return this.router = CozyApp.Routers.AppRouter = new AppRouter();
+    console.log(document.location.href);
+    this.router = CozyApp.Routers.AppRouter = new AppRouter();
+    return this.router.on("route:quickmarklet", function(title, url) {
+      return console.log("let", title, url);
+    });
   };
 
   AppView.prototype.toggleCloud = function() {

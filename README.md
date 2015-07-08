@@ -14,6 +14,8 @@ Store all your bookmarks here !
 
 # Changelog
 
+* v0.9.7
+  * be ready for the new data-system
 * v0.9.6
   * open links in a new window
 * v0.9.5

@@ -6,7 +6,7 @@ americano = require('americano');
 port = process.env.PORT || 31435;
 
 americano.start({
-  name: 'Bookmark',
+  name: 'Quickmarks',
   port: port
 }, function(err, app, server) {
   var Bookmark;

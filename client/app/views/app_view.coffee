@@ -24,8 +24,12 @@ module.exports = class AppView extends View
     template: ->
         require "./templates/home"
 
-    initialize: ->
+    initialize: () ->
+        console.log(document.location.href)
         @router = CozyApp.Routers.AppRouter = new AppRouter()
+
+        @router.on "route:quickmarklet", (title, url) ->
+            console.log("let", title, url)
 
     toggleCloud: ->
         $("#tags-cloud").toggle()
