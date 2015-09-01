@@ -516,11 +516,7 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.initialize = function() {
-    console.log(document.location.href);
-    this.router = CozyApp.Routers.AppRouter = new AppRouter();
-    return this.router.on("route:quickmarklet", function(title, url) {
-      return console.log("let", title, url);
-    });
+    return this.router = CozyApp.Routers.AppRouter = new AppRouter();
   };
 
   AppView.prototype.toggleCloud = function() {
@@ -636,9 +632,7 @@ module.exports = AppView = (function(superClass) {
             $(".bookmark:first").addClass("new");
             return View.log("" + (title || url) + " added");
           };
-        })(this)
-      });
-      console.log(bookmark)({
+        })(this),
         "error": (function(_this) {
           return function() {
             return View.error("Server error occured, " + "bookmark was not saved");

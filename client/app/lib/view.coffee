@@ -10,8 +10,6 @@ module.exports = class View extends Backbone.View
         model: @model?.toJSON()
 
     render: ->
-        # console.debug "Rendering #{@constructor.name}", @
-
         @beforeRender()
         @$el.html @template()
         @afterRender()

@@ -25,11 +25,10 @@ module.exports = class AppView extends View
         require "./templates/home"
 
     initialize: () ->
-        console.log(document.location.href)
         @router = CozyApp.Routers.AppRouter = new AppRouter()
 
-        @router.on "route:quickmarklet", (title, url) ->
-            console.log("let", title, url)
+        # @router.on "route:quickmarklet", (title, url) ->
+        #     console.log("let", title, url)
 
     toggleCloud: ->
         $("#tags-cloud").toggle()
@@ -128,7 +127,6 @@ module.exports = class AppView extends View
                     $(".bookmark:first").addClass "new"
                     # FixMe: create a log class
                     View.log "" + (title || url) + " added"
-            console.log(bookmark)
                 "error": =>
                     View.error "Server error occured, " +
                                "bookmark was not saved"
