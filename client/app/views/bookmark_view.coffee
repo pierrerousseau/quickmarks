@@ -14,7 +14,7 @@ module.exports = class BookmarkView extends View
 
     template: ->
         template = require "./templates/bookmark"
-        template @getRenderData()
+        template @getRenderData().model
 
     render: () ->
         @model.cleanValues()

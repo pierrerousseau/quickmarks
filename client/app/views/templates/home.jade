@@ -1,67 +1,62 @@
 #content
-    #bookmarks-exchange
-        input#bookmarks-exchange-file(
-            type="file", 
-            name="exchange-file"
-        )
-        button#bookmarks-exchange-import(
-            class="glyphicon glyphicon-upload"
-            title="Import html bookmarks files exported from your browser"
-        )
-        button#bookmarks-exchange-export(
-            class="glyphicon glyphicon-download"
-            title="Export bookmarks in html"
-        )
-        #bookmarks-exchange-done
-        #bookmarks-exchange-failed
+    #add-modal(class="modal fade", tabindex="-1", role="dialog")
+        div(class="modal-dialog")
+            div(class="modal-content")
+                div(class="modal-header")
+                    button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+                        span(aria-hidden="true") &times;
+                    h2(class="modal-title") Add a new bookmark
+                form#bookmark-add(class="form-horizontal")
+                    div(class="modal-body")
+                        div(class="form-group")
+                            label(for="add-link", class="col-xs-2  control-label") Link URL
+                            div(class="col-xs-9")
+                                input#add-link(class="form-control", type="text", placeholder="http://cozy.io/")
+                        div(class="form-group")
+                            label(for="add-title", class="col-xs-2  control-label") Title
+                            div(class="col-xs-9")
+                                input#add-title(class="form-control", type="text", placeholder="A short title for your bookmark")
+                        div(class="form-group")
+                            label(for="add-description", class="col-xs-2  control-label") Description
+                            div(class="col-xs-9")
+                                textarea#add-description(class="form-control", placeholder="A more complete description of your bookmark")
+                        div(class="form-group")
+                            label(for="add-tags", class="col-xs-2  control-label") Tags
+                            div(class="col-xs-9")
+                                input#add-tags(class="form-control", type="text", placeholder="free, news")
+                                p(class="help-block") you can use multiple tags, use comma to split them
+                    div(class="modal-footer")
+                        button(type="button", class="btn btn-default", data-dismiss="modal") Close
+                        button(type="submit", class="btn btn-primary") 
+                            span(class="glyphicon glyphicon-plus") 
+                            | Add
 
-    form#bookmark-add(class="box")
-        #bookmark-add-title(
-            title="Toggle full bookmark form"
-        ) Bookmark a link
-        input#bookmark-add-link-url(
-            placeholder="url"
-        )
-        #bookmark-add-full
-            input#bookmark-add-link-title(
-                placeholder="title"
-            )
-            textarea#bookmark-add-link-description(
-                placeholder="description"
-            )
-            input#bookmark-add-link-tags(
-                placeholder="tags, separated by ','"
-            )
-            #bookmark-add-buttons
-                button#bookmark-add-add(
-                    class="glyphicon glyphicon-ok-circle",
-                    title="Save the bookmark"
-                )
-                button#bookmark-add-clean(
-                    class="glyphicon glyphicon-remove-circle",
-                    title="Clear the form"
-                )
-                            
-    #bookmarks(class="box")
-        #bookmarks-tools
-            input#bookmarks-tools-search(
-                class="search"
-                placeholder="search"
-            )
-            button#bookmarks-tools-clean(
-                class="glyphicon glyphicon-remove-circle",
-                title="Clear search field"
-            )
-            button#bookmarks-tools-tags(
-                class="glyphicon glyphicon-tags",
-                title="Toggle tags cloud"
-            )
-            button#bookmarks-tools-sort(
-                class="glyphicon glyphicon-sort sort",
-                title="Sort links",
-                data-sort="bookmark-title"
-            )
+    #header
+        div(class="row")
+            .add(class="col-xs-4")
+                button(class="btn btn-default", type="submit", data-toggle="modal", data-target="#add-modal") 
+                    span(class="glyphicon glyphicon-plus")
+                    | Add a new bookmark
+            .or(class="col-xs-2") or
+            form.search(class="col-xs-6")
+                div(class="input-group")
+                    input(class="form-control", type="text", placeholder="Search for a bookmark")
+                    div(class="input-group-addon")
+                        img(src="icons/search.svg", alt="search")
+                p(class="help-block") Type a keyword, we will search for it in your saved bookmarks 
 
-            #tags-cloud 
+    #tags-toggle(class="row")
+        .buttons(class="col-xs-offset-10 col-xs-2")
+            .tags-show
+                span(class="glyphicon glyphicon-chevron-down")
+                | show tags
+            .tags-hide
+                span(class="glyphicon glyphicon-chevron-up")
+                | hide tags
+    #tags
 
+    #loader(class="loader-inner ball-pulse")
+        p Loading bookmarks, please wait ...
+
+    #bookmarks
         ul.list

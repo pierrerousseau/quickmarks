@@ -476,7 +476,7 @@ module.exports = AppRouter = (function(superClass) {
 });
 
 ;require.register("views/app_view", function(exports, require, module) {
-var AppRouter, AppView, Bookmark, BookmarksView, View,
+var AppRouter, AppView, Bookmark, BookmarksView, View, tagSep,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -488,6 +488,8 @@ BookmarksView = require("./bookmarks_view");
 
 Bookmark = require("../models/bookmark");
 
+tagSep = ",";
+
 module.exports = AppView = (function(superClass) {
   extend(AppView, superClass);
 
@@ -498,17 +500,7 @@ module.exports = AppView = (function(superClass) {
   AppView.prototype.el = "body.application";
 
   AppView.prototype.events = {
-    "click #bookmark-add-title": "toggleForm",
-    "keyup #bookmark-add-link-url": "showForm",
-    "click #bookmark-add-link-url": "showForm",
-    "click #bookmark-add-clean": "cleanForm",
-    "submit #bookmark-add": "bookmarkLink",
-    "click #bookmarks-exchange-import": "import",
-    "click #bookmarks-exchange-export": "export",
-    "change #bookmarks-exchange-file": "uploadFile",
-    "click .tag": "tagClick",
-    "click #bookmarks-tools-clean": "cleanSearch",
-    "click #bookmarks-tools-tags": "toggleCloud"
+    "submit #bookmark-add": "bookmarkLink"
   };
 
   AppView.prototype.template = function() {
@@ -516,105 +508,43 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.initialize = function() {
-    return this.router = CozyApp.Routers.AppRouter = new AppRouter();
+    this.router = CozyApp.Routers.AppRouter = new AppRouter();
+    return this.loader = $("#loader");
   };
 
-  AppView.prototype.toggleCloud = function() {
-    return $("#tags-cloud").toggle();
+  AppView.prototype.startLoader = function() {
+    return this.loader.show("slow");
   };
 
-  AppView.prototype.cleanSearch = function() {
-    $("#bookmarks-tools-search").val("");
-    return window.featureList.search();
-  };
-
-  AppView.prototype.tagClick = function(evt) {
-    var tag;
-    tag = $(evt.currentTarget).text();
-    $("#bookmarks-tools-search").val(tag);
-    return window.featureList.search(tag);
-  };
-
-  AppView.prototype.setTagCloud = function() {
-    var allTags, factor, i, len, nbTags, results, size, sortable, tag;
-    allTags = {};
-    nbTags = 0;
-    this.bookmarksView.collection.forEach(function(bookmark) {
-      return (bookmark.get("tags")).forEach(function(tag) {
-        if (tag !== "") {
-          if (allTags[tag] != null) {
-            allTags[tag] += 1;
-          } else {
-            allTags[tag] = 1;
-          }
-          return nbTags += 1;
-        }
-      });
-    });
-    sortable = [];
-    for (tag in allTags) {
-      sortable.push([tag, allTags[tag]]);
-    }
-    factor = nbTags > 20 ? 1.5 : 1.0;
-    results = [];
-    for (i = 0, len = sortable.length; i < len; i++) {
-      tag = sortable[i];
-      size = 1 + factor * 10 * tag[1] / nbTags;
-      results.push($("#tags-cloud").append("<span class='tag' title='" + tag[1] + " occurences' style='font-size:" + size + "em'>" + tag[0] + "</span> "));
-    }
-    return results;
+  AppView.prototype.stopLoader = function() {
+    return this.loader.hide();
   };
 
   AppView.prototype.afterRender = function() {
-    $(".url-field").focus();
+    this.startLoader();
     this.bookmarksView = new BookmarksView();
-    this.bookmarksView.$el.html('<em>loading...</em>');
     return this.bookmarksView.collection.fetch({
       success: (function(_this) {
         return function() {
-          _this.bookmarksView.$el.find('em').remove();
+          _this.stopLoader();
           window.sortOptions = {
             "valueNames": ["bookmark-title", "bookmark-url", "bookmark-tags", "bookmark-description"]
           };
           window.featureList = new List("bookmarks", window.sortOptions);
-          View.log("bookmarks loaded");
-          return _this.setTagCloud();
+          return View.log("bookmarks loaded");
         };
       })(this)
     });
   };
 
-  AppView.prototype.toggleForm = function(evt) {
-    var $container;
-    $container = $("#bookmark-add-full");
-    $container.toggle("slow");
-    return false;
-  };
-
-  AppView.prototype.showForm = function(evt) {
-    var $container;
-    $container = $("#bookmark-add-full");
-    if (!$container.is(":visible")) {
-      this.toggleForm();
-    }
-    return false;
-  };
-
-  AppView.prototype.cleanForm = function(evt) {
-    var $form, $inputs;
-    $form = $("form");
-    $inputs = $form.find("input, textarea");
-    $inputs.val("");
-    return false;
-  };
-
   AppView.prototype.bookmarkLink = function(evt) {
     var bookmark, description, tags, title, url;
+    console.log("ok");
     evt.preventDefault();
-    url = $("#bookmark-add-link-url").val();
-    title = $("#bookmark-add-link-title").val();
-    description = $("#bookmark-add-link-description").val();
-    tags = $("#bookmark-add-link-tags").val().split(',').map(function(tag) {
+    url = $("#add-link").val();
+    title = $("#add-title").val();
+    description = $("#add-description").val();
+    tags = $("#add-tags").val().split(tagSep).map(function(tag) {
       return $.trim(tag);
     });
     if ((url != null ? url.length : void 0) > 0) {
@@ -627,8 +557,6 @@ module.exports = AppView = (function(superClass) {
       this.bookmarksView.collection.create(bookmark, {
         "success": (function(_this) {
           return function() {
-            _this.cleanForm();
-            _this.toggleForm();
             $(".bookmark:first").addClass("new");
             return View.log("" + (title || url) + " added");
           };
@@ -643,93 +571,6 @@ module.exports = AppView = (function(superClass) {
       View.error("Url field is required");
     }
     return false;
-  };
-
-  AppView.prototype.addBookmarkFromFile = function(link, others) {
-    var $link, bookmark, description, next, title, url;
-    $link = $(link);
-    if (!!$link.attr("href").indexOf("place") && !$link.attr("feedurl")) {
-      url = $link.attr("href");
-      title = $link.text();
-      description = "";
-      next = $link.parents(":first").next();
-      if (next.is("dd")) {
-        description = next.text();
-      }
-      bookmark = new Bookmark({
-        title: title,
-        url: url,
-        tags: [],
-        description: description
-      });
-      return this.bookmarksView.collection.create(bookmark, {
-        success: (function(_this) {
-          return function() {
-            var imported;
-            imported = $("#bookmarks-exchange-done");
-            if (imported.text()) {
-              imported.text(parseInt(imported.text()) + 1);
-            } else {
-              imported.text(1);
-            }
-            return _this.addBookmarkFromFile(others[0], others.slice(1));
-          };
-        })(this),
-        error: (function(_this) {
-          return function() {
-            var notImported;
-            notImported = $("#bookmarks-exchange-failed");
-            if (notImported.text()) {
-              notImported.text(parseInt(notImported.text()) + 1);
-            } else {
-              notImported.text(1);
-            }
-            return _this.addBookmarkFromFile(others[0], others.slice(1));
-          };
-        })(this)
-      });
-    }
-  };
-
-  AppView.prototype.addBookmarksFromFile = function(file) {
-    var importButton, links, loaded;
-    importButton = $("#bookmarks-exchange-import");
-    loaded = $(file);
-    links = loaded.find("dt a");
-    this.addBookmarkFromFile(links[0], links.slice(1));
-    return importButton.removeClass("doing");
-  };
-
-  AppView.prototype.uploadFile = function(evt) {
-    var file, importButton, reader;
-    importButton = $("#bookmarks-exchange-import");
-    if (importButton.hasClass("doing")) {
-      return View.error("I'm working!");
-    } else {
-      file = evt.target.files[0];
-      if (file.type !== "text/html") {
-        View.error("This file cannot be imported");
-        return;
-      }
-      importButton.addClass("doing");
-      reader = new FileReader();
-      reader.onload = (function(_this) {
-        return function(evt) {
-          return _this.addBookmarksFromFile(evt.target.result);
-        };
-      })(this);
-      return reader.readAsText(file);
-    }
-  };
-
-  AppView.prototype["import"] = function(evt) {
-    return View.confirm("Import html bookmarks file exported by " + "firefox or chrome", function() {
-      return $("#bookmarks-exchange-file").click();
-    });
-  };
-
-  AppView.prototype["export"] = function(evt) {
-    return window.location = "export";
   };
 
   return AppView;
@@ -766,7 +607,7 @@ module.exports = BookmarkView = (function(superClass) {
   BookmarkView.prototype.template = function() {
     var template;
     template = require("./templates/bookmark");
-    return template(this.getRenderData());
+    return template(this.getRenderData().model);
   };
 
   BookmarkView.prototype.render = function() {
@@ -867,35 +708,11 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div class="buttons"><button title="Remove this link from saved bookmarks and place its details into the form" class="bookmark-delete glyphicon glyphicon-share"></button></div><div class="bookmark-link">');
-if ( model.title)
-{
-buf.push('<div class="bookmark-title"><a');
-buf.push(attrs({ 'href':("" + (model.httpUrl) + ""), 'target':("_blank") }, {"href":true,"target":true}));
-buf.push('>' + escape((interp = model.title) == null ? '' : interp) + '</a></div><div class="bookmark-url"><a');
-buf.push(attrs({ 'href':("" + (model.httpUrl) + ""), 'target':("_blank") }, {"href":true,"target":true}));
-buf.push('>' + escape((interp = model.url) == null ? '' : interp) + '</a></div>');
-}
-else
-{
-buf.push('<div class="bookmark-title"><a');
-buf.push(attrs({ 'href':("" + (model.httpUrl) + ""), 'target':("_blank") }, {"href":true,"target":true}));
-buf.push('>' + escape((interp = model.url) == null ? '' : interp) + '</a></div>');
-}
-buf.push('</div>');
-if ( model.description || model.readableTags)
-{
-buf.push('<div class="bookmark-description box">');
-if ( model.readableTags)
-{
-buf.push('<div class="bookmark-tags"><span>' + escape((interp = model.readableTags) == null ? '' : interp) + '</span></div>');
-}
-if ( model.description)
-{
-buf.push('<p>' + escape((interp = model.description) == null ? '' : interp) + '</p>');
-}
-buf.push('</div>');
-}
+buf.push('<div class="row"><div class="main"><div class="title col-xs-4"><a');
+buf.push(attrs({ 'href':(httpUrl), 'target':("_blank") }, {"href":true,"target":true}));
+buf.push('>' + escape((interp = title) == null ? '' : interp) + '</a></div><div class="url col-xs-4"> <a');
+buf.push(attrs({ 'href':(httpUrl), 'target':("_blank") }, {"href":true,"target":true}));
+buf.push('>' + escape((interp = httpUrl) == null ? '' : interp) + '</a></div><div class="tags col-xs-4">' + escape((interp = tags) == null ? '' : interp) + '</div></div><div class="more"><div class="description col-xs-12">' + escape((interp = description) == null ? '' : interp) + '</div></div></div>');
 }
 return buf.join("");
 };
@@ -907,7 +724,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><div id="bookmarks-exchange"><input id="bookmarks-exchange-file" type="file" name="exchange-file"/><button id="bookmarks-exchange-import" title="Import html bookmarks files exported from your browser" class="glyphicon glyphicon-upload"></button><button id="bookmarks-exchange-export" title="Export bookmarks in html" class="glyphicon glyphicon-download"></button><div id="bookmarks-exchange-done"></div><div id="bookmarks-exchange-failed"></div></div><form id="bookmark-add" class="box"><div id="bookmark-add-title" title="Toggle full bookmark form">Bookmark a link</div><input id="bookmark-add-link-url" placeholder="url"/><div id="bookmark-add-full"><input id="bookmark-add-link-title" placeholder="title"/><textarea id="bookmark-add-link-description" placeholder="description"></textarea><input id="bookmark-add-link-tags" placeholder="tags, separated by \',\'"/><div id="bookmark-add-buttons"><button id="bookmark-add-add" title="Save the bookmark" class="glyphicon glyphicon-ok-circle"></button><button id="bookmark-add-clean" title="Clear the form" class="glyphicon glyphicon-remove-circle"></button></div></div></form><div id="bookmarks" class="box"><div id="bookmarks-tools"><input id="bookmarks-tools-search" placeholder="search" class="search"/><button id="bookmarks-tools-clean" title="Clear search field" class="glyphicon glyphicon-remove-circle"></button><button id="bookmarks-tools-tags" title="Toggle tags cloud" class="glyphicon glyphicon-tags"></button><button id="bookmarks-tools-sort" title="Sort links" data-sort="bookmark-title" class="glyphicon glyphicon-sort sort"></button><div id="tags-cloud"> </div></div><ul class="list"></ul></div></div>');
+buf.push('<div id="content"><div id="add-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Add a new bookmark</h2></div><form id="bookmark-add" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="add-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="add-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="add-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="add-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="add-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="add-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="add-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="add-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Close</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Add</button></div></form></div></div></div><div id="header"><div class="row"><div class="add col-xs-4"><button type="submit" data-toggle="modal" data-target="#add-modal" class="btn btn-default"> <span class="glyphicon glyphicon-plus"></span>Add a new bookmark</button></div><div class="or col-xs-2">or</div><form class="search col-xs-6"><div class="input-group"><input type="text" placeholder="Search for a bookmark" class="form-control"/><div class="input-group-addon"><img src="icons/search.svg" alt="search"/></div></div><p class="help-block">Type a keyword, we will search for it in your saved bookmarks </p></form></div></div><div id="tags-toggle" class="row"><div class="buttons col-xs-offset-10 col-xs-2"><div class="tags-show"><span class="glyphicon glyphicon-chevron-down"></span>show tags</div><div class="tags-hide"><span class="glyphicon glyphicon-chevron-up"></span>hide tags</div></div></div><div id="tags"></div><div id="loader" class="loader-inner ball-pulse"><p>Loading bookmarks, please wait ...</p></div><div id="bookmarks"><ul class="list"></ul></div></div>');
 }
 return buf.join("");
 };

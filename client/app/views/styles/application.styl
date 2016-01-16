@@ -1,246 +1,170 @@
 // nib is a powerful lib for stylus that provides cross-browser css3 mixins.
 @import 'nib'
 
-@import '_base'
-@import '_ui'
+main-background = #41454d
+main-color = #c6c6c6
+button-background = #d4cfc7
+button-color = #616164
+button-background-invert = #616164
+button-color-invert = #d4cfc7
+modal-background = #ecebe9
+modal-color = #676766
+modal-input-background = #f6f5f3
+modal-input-color = #888786
 
-// Import your styles here
-@import '_states'
-@import '_layout'
-@import '_responsive'
+tags-background = #616167
+tags-color = #d4cfc7
 
-body-back = #ccc
+loader-background = #ecebe9
+loader-color = #58493e
 
-content-padding = 1em
-
-box-border = 1px solid #1e1e1e
-box-radius = 4px
-box-back   = #1f1f1f
-box-color  = #bbb
-
-input-color  = #eee
-input-back   = #262626
-input-shadow = inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(121,186,236,.6)
-
-tools-color  = #5e7d7e
-tools-comp-color = #7d5f5e
-
-good-color = #4cc417
-good-back  = #3d3c3a
-good-link-color = #05806d
-bad-color  = #9118c4
-bad-back   = #800517
-bad-link-color = #05806d
-
-title-font-size = 2em
-title-font-weight = bold
-
-bookmark-description-back = #222226
-bookmark-description-color = #8c95a6
-bookmark-tag-color = #a69c8b
+list-background = #ecebe9
+list-color = #58493e
+list-hightlight-background = #f4f3f0
+list-hightlight-color = #ec4e1b
 
 body
-    background: body-back
-
-button
-    background: transparent
-    border: none
-    padding: 6px 12px
-    font-size: 1.25em
-    &:hover
-        opacity: .8
-
-textarea
-input
-    display: inline-block
-    width: 100%
-    height: 2em
-    padding: .5em
-    margin: .5em
-    border: box-border
-    border-radius: box-radius
-    background: input-back
-    color: input-color
-    &:focus
-        box-shadow: input-shadow
-
-textarea
-    height: 5em
-
-
-.box
-    border: box-border
-    border-radius: box-radius
-    background: box-back
-    color: box-color
-    padding: 1em
-    margin-bottom: 1em
-
+    background: list-background;
+    color: list-color;
+    font-family: "Open Sans", sans-serif
 
 #content
-    padding: content-padding
-
-
-#bookmarks-exchange
-    position: absolute
-    top: content-padding
-    right: content-padding
-    padding: .1em
-
-    color: tools-color
-
-    button
-        margin: .1em
-        padding: 0
-        &.doing
-            color: tools-comp-color
-
-#bookmarks-exchange-file
-    display: none
-
-#bookmarks-exchange-done
-    color: good-color
-#bookmarks-exchange-failed
-    color: bad-color
-
-
-
-#bookmark-add
-    textarea
+    .btn
+        font-weight: bolder
+        font-size: 1.5em
+        text-shadow: none
+        white-space: normal
+        span
+            margin-right: 1em
     input
-        width: 95%
+        height: 2em
+        font-size: 1.5em
+        box-shadow: none
+        border: none
 
-#bookmark-add-title
-    font-size: title-font-size
-    font-weight: title-font-weight
-    margin-bottom: .2em
+#header
+    color: main-color
+    background: main-background
 
-#bookmark-add-title
-    cursor: pointer
-
-#bookmark-add-buttons
-    width: 95%
-    text-align: right
-
-#bookmark-add-add
-    font-weight: bolder
-    font-size: 2em
-    color: good-color
-
-#bookmark-add-clean
-    color: bad-color
-
-#bookmark-add-full
-    display: none
-
-
-#bookmarks-tools
+    font-size: 1.5em
+    padding-top: 3em
+    padding-bottom: 3em
+    padding-left: 10%
+    padding-right: 10%
     button
-        color: tools-color
-    margin-bottom: .5em
-#bookmarks-tools-search
-    width: 25%
-#tags-cloud
+        background: button-background
+        color: button-color
+        height: 2.5em
+        padding-left: 1em
+        padding-right: 1em
+    .add 
+        text-align: right
+    .or
+        margin-top: 1em
+        text-align: center
+    .search
+        input
+            background: button-background
+            color: button-color
+            height: 2.5em
+            padding-left: 1em
+            padding-right: 1em
+        .input-group-addon
+            background: button-background
+            color: button-color
+            cursor: pointer
+            img
+                margin-left: .2em
+                opacity: .7
+                height: 2.5em
+    .help-block
+        text-align: center
+
+#add-modal
+    .modal-content
+        background: modal-background
+        color: modal-color
+
+        .modal-header
+            font-size: 1.5em
+            text-align: center
+
+        .modal-footer
+            button
+                border: 0
+                background: button-background-invert
+                color: button-color-invert
+            span
+                margin-right: .25em
+    
+
+#tags-toggle
+    color: main-color
+    background: main-background
+    font-size: 1.5em
+    .tags-show
+    .tags-hide
+        text-align: center
+        background: tags-background
+        color: tags-color
+        width: 50%
+        padding: .25em
+        span
+            margin-right: .25em
+            vertical-align: sub
+    .tags-hide
+        display: none
+
+#tags
+    min-height: 2em
+    background: tags-background
+    color: tags-color
+
+#loader
+    background: list-background
+    color: list-color
     display: none
-    color: tools-color
-    text-align: center
-    .tag:hover
-        color: tools-comp-color
-        cursor: pointer
 
-#bookmarks
-    ul 
+ #bookmarks
+    margin: 1em
+    .list
         list-style: none
-        padding-left: 1em 
-        li
-            padding: .1em
 
-        .bookmark
+    .bookmark
+        margin: 0 15%
+        padding: .5em 0 0 0 
+        font-size: 1.5em
+
+        .row
+            padding: 0
+            margin: 0
+
+        .title
+            a
+            a:active
+            a:visited
+                font-size: 1.1em
+                font-weight: bolder
+                text-align: left
+                color: list-color
+        .url
+            font-style: italic
+            text-align: center
+            a
+            a:active
+            a:visited
+                color: list-color
+        .tags
             opacity: .9
-            white-space: nowrap
-            margin-bottom: .1em
-            border-radius: box-radius
-            div
-                display: inline-block
-
-            .buttons
-                vertical-align: top
-            .bookmark-delete
-                visibility: hidden
-                color: bad-color
-                margin: 0
-                padding: 0
-            .bookmark-link
-                margin-left: 1em
-                margin-bottom: .5em
-                min-width: 90%
-
-                .bookmark-title
-                    display: block
-                .bookmark-url
-                    display: block
-                    opacity: .5
+            text-align: right
+        .description
+            opacity: .9
+            border-bottom: 1px #ccc solid
+            padding: 1em
+        &:hover
+            background: list-hightlight-background
+            .title 
                 a
+                a:active
                 a:visited
-                    display: block
-                    width: 70%
-                    white-space: nowrap
-                    overflow: hidden
-                    text-overflow: ellipsis
-                    &:hover
-                        width: 100%
-                        white-space: normal
-                        overflow: initial
-
-            .bookmark-description
-                margin-left: 2em
-                display: block
-                &.box
-                    padding-top: .2em
-                    padding-bottom: .2em
-                    background: bookmark-description-back
-                    color: bookmark-description-color
-                .bookmark-tags
-                    color: bookmark-tag-color
-                    margin-bottom: .2em
-                p
-                    white-space: normal
-
-            &.new
-                background: good-back
-                a
-                a:visited
-                    color: good-link-color
-                .bookmark-description
-                    &.box
-                        border-color: good-back
-                        background: good-back
-                        color: good-link-color
-                .bookmark-tags
-                    color: good-link-color
-                .bookmark-link
-                    .bookmark-url
-                         opacity: .9
-                .bookmark-delete
-                    color: good-link-color
-            &.to-delete
-                background: bad-back
-                a
-                a:visited
-                    color: bad-link-color
-                .bookmark-description
-                    &.box
-                        border-color: bad-back
-                        background: bad-back
-                        color: bad-link-color
-                .bookmark-tags
-                    color: bad-link-color
-                .bookmark-link
-                    .bookmark-url
-                         opacity: .9
-                .bookmark-delete
-                    color: bad-link-color
-            &:hover
-                opacity: 1
-                .bookmark-delete
-                    visibility: visible
+                    color: list-hightlight-color

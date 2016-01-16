@@ -1,22 +1,9 @@
-.buttons
-    button.bookmark-delete(
-        class="glyphicon glyphicon-share"
-        title="Remove this link from saved bookmarks and place its details into the form"
-    )
-        
-.bookmark-link
-    if model.title
-        .bookmark-title
-            a(href="#{model.httpUrl}", target="_blank") #{model.title}
-        .bookmark-url
-            a(href="#{model.httpUrl}", target="_blank") #{model.url}
-    else
-        .bookmark-title
-            a(href="#{model.httpUrl}", target="_blank") #{model.url}
-if model.description || model.readableTags
-    .bookmark-description(class="box")
-        if model.readableTags
-            .bookmark-tags
-                span #{model.readableTags}
-        if model.description
-            p #{model.description}
+div(class="row")
+	.main
+		.title(class="col-xs-4")
+			a(href=httpUrl, target="_blank") #{title}
+		.url(class="col-xs-4") 
+			a(href=httpUrl, target="_blank") #{httpUrl}
+		.tags(class="col-xs-4") #{tags}
+	.more
+		.description(class="col-xs-12") #{description}
