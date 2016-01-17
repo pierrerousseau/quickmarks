@@ -1,9 +1,16 @@
 div(class="row")
-	.main
-		.title(class="col-xs-4")
-			a(href=httpUrl, target="_blank") #{title}
-		.url(class="col-xs-4") 
-			a(href=httpUrl, target="_blank") #{httpUrl}
-		.tags(class="col-xs-4") #{tags}
-	.more
-		.description(class="col-xs-12") #{description}
+    .main
+        .title(class="col-xs-4")
+            a(href=httpUrl, target="_blank") #{title}
+        .url(class="col-xs-5") 
+            a(href=httpUrl, target="_blank") #{httpUrl}
+        .infos(class="col-xs-2") 
+            .tags #{tags}
+            .date #{created}
+        .actions
+            button(type="button", class="btn btn-primary edit") 
+                span(class="glyphicon glyphicon-pencil") 
+            button(type="button", class="btn btn-primary remove") 
+                span(class="glyphicon glyphicon-remove") 
+    .more
+        .description(class="col-xs-11") #{description}

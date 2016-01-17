@@ -28,6 +28,9 @@ body
     color: list-color;
     font-family: "Open Sans", sans-serif
 
+.row
+    margin: 0
+
 #content
     .btn
         font-weight: bolder
@@ -131,9 +134,10 @@ body
         list-style: none
 
     .bookmark
-        margin: 0 15%
+        margin: 0 10%
         padding: .5em 0 0 0 
         font-size: 1.5em
+        border-radius: 25px 
 
         .row
             padding: 0
@@ -145,26 +149,53 @@ body
             a:visited
                 font-size: 1.1em
                 font-weight: bolder
-                text-align: left
                 color: list-color
         .url
+            overflow: ellipsis
             font-style: italic
-            text-align: center
+            &:hover
+                white-space: initial
+                word-wrap: break-word
+                overflow: initial
             a
             a:active
             a:visited
                 color: list-color
-        .tags
+        .infos
             opacity: .9
             text-align: right
+            .date
+                font-size: .8em
+                font-style: italic
         .description
             opacity: .9
-            border-bottom: 1px #ccc solid
             padding: 1em
+            border-bottom: 1px #ccc solid
+
         &:hover
             background: list-hightlight-background
             .title 
                 a
                 a:active
                 a:visited
+                    color: list-hightlight-color
+            .description
+                border-radius: 0 0 0 25px 
+            .actions
+                display: block
+
+        .actions
+            display: none
+            text-align: right
+            button
+                background: inherit
+                color: inherit
+                text-align: center
+                font-size: 1em
+                font-weight: lighter
+                border: none
+                box-shadow: none
+                padding: 0
+                margin: 0
+                &:hover
                     color: list-hightlight-color

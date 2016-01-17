@@ -254,7 +254,6 @@ module.exports = View = (function(superClass) {
         "icon": false,
         "opacity": .8,
         "delay": 2000,
-        "type": "success",
         "buttons": {
           "sticker": false
         }
@@ -539,7 +538,6 @@ module.exports = AppView = (function(superClass) {
 
   AppView.prototype.bookmarkLink = function(evt) {
     var bookmark, description, tags, title, url;
-    console.log("ok");
     evt.preventDefault();
     url = $("#add-link").val();
     title = $("#add-title").val();
@@ -558,7 +556,8 @@ module.exports = AppView = (function(superClass) {
         "success": (function(_this) {
           return function() {
             $(".bookmark:first").addClass("new");
-            return View.log("" + (title || url) + " added");
+            View.log("" + (title || url) + " added");
+            return $("#add-modal").modal("hide");
           };
         })(this),
         "error": (function(_this) {
@@ -581,6 +580,7 @@ module.exports = AppView = (function(superClass) {
 
 ;require.register("views/bookmark_view", function(exports, require, module) {
 var BookmarkView, View,
+  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -594,20 +594,36 @@ module.exports = BookmarkView = (function(superClass) {
   BookmarkView.prototype.tagName = "li";
 
   BookmarkView.prototype.events = {
-    "click .bookmark-delete": "deleteBookmark",
-    "mouseenter .bookmark-delete": "setToDelete",
-    "mouseleave .bookmark-delete": "setToNotDelete"
+    "click .remove": "remove"
   };
 
-  function BookmarkView(model) {
-    this.model = model;
+  function BookmarkView(model1) {
+    this.model = model1;
+    this["delete"] = bind(this["delete"], this);
     BookmarkView.__super__.constructor.call(this);
   }
+
+  BookmarkView.prototype.getRenderData = function() {
+    var local, model;
+    model = BookmarkView.__super__.getRenderData.call(this).model;
+    if (!model.created) {
+      model.created = "just now";
+    } else {
+      local = new Date(model.created);
+      local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+      model.created = local.toLocaleDateString(void 0, {
+        "day": "2-digit",
+        "month": "2-digit",
+        "year": "numeric"
+      });
+    }
+    return model;
+  };
 
   BookmarkView.prototype.template = function() {
     var template;
     template = require("./templates/bookmark");
-    return template(this.getRenderData().model);
+    return template(this.getRenderData());
   };
 
   BookmarkView.prototype.render = function() {
@@ -615,28 +631,15 @@ module.exports = BookmarkView = (function(superClass) {
     return BookmarkView.__super__.render.call(this);
   };
 
-  BookmarkView.prototype.setToDelete = function() {
-    return this.$el.addClass("to-delete");
-  };
-
-  BookmarkView.prototype.setToNotDelete = function() {
-    return this.$el.removeClass("to-delete");
-  };
-
-  BookmarkView.prototype.deleteBookmark = function() {
+  BookmarkView.prototype["delete"] = function() {
     var title;
-    title = this.$el.find(".bookmark-title").html();
-    $("#bookmark-add-link-url").val(this.$el.find(".bookmark-title a").attr("href"));
-    $("#bookmark-add-link-title").val(this.$el.find(".bookmark-title a").text());
-    $("#bookmark-add-link-tags").val(this.$el.find(".bookmark-tags span").text());
-    $("#bookmark-add-link-description").val(this.$el.find(".bookmark-description p").text());
-    $("#bookmark-add-full").show();
+    title = this.$el.find(".title").text();
     return this.model.destroy({
       success: (function(_this) {
         return function() {
           _this.destroy();
           window.featureList.remove("bookmark-title", title);
-          return View.log("" + title + " removed and placed in form");
+          return View.log("" + title + " removed.");
         };
       })(this),
       error: (function(_this) {
@@ -645,6 +648,12 @@ module.exports = BookmarkView = (function(superClass) {
         };
       })(this)
     });
+  };
+
+  BookmarkView.prototype.remove = function() {
+    var title;
+    title = this.$el.find(".title").text();
+    return View.confirm("Do you really want to remove " + title + "?", this["delete"]);
   };
 
   return BookmarkView;
@@ -710,9 +719,9 @@ with (locals || {}) {
 var interp;
 buf.push('<div class="row"><div class="main"><div class="title col-xs-4"><a');
 buf.push(attrs({ 'href':(httpUrl), 'target':("_blank") }, {"href":true,"target":true}));
-buf.push('>' + escape((interp = title) == null ? '' : interp) + '</a></div><div class="url col-xs-4"> <a');
+buf.push('>' + escape((interp = title) == null ? '' : interp) + '</a></div><div class="url col-xs-5"> <a');
 buf.push(attrs({ 'href':(httpUrl), 'target':("_blank") }, {"href":true,"target":true}));
-buf.push('>' + escape((interp = httpUrl) == null ? '' : interp) + '</a></div><div class="tags col-xs-4">' + escape((interp = tags) == null ? '' : interp) + '</div></div><div class="more"><div class="description col-xs-12">' + escape((interp = description) == null ? '' : interp) + '</div></div></div>');
+buf.push('>' + escape((interp = httpUrl) == null ? '' : interp) + '</a></div><div class="infos col-xs-2"> <div class="tags">' + escape((interp = tags) == null ? '' : interp) + '</div><div class="date">' + escape((interp = created) == null ? '' : interp) + '</div></div><div class="actions"><button type="button" class="btn btn-primary edit"> <span class="glyphicon glyphicon-pencil"> </span></button><button type="button" class="btn btn-primary remove"> <span class="glyphicon glyphicon-remove"> </span></button></div></div><div class="more"><div class="description col-xs-11">' + escape((interp = description) == null ? '' : interp) + '</div></div></div>');
 }
 return buf.join("");
 };

@@ -5,38 +5,43 @@ module.exports = class BookmarkView extends View
     tagName: "li"
 
     events:
-        "click .bookmark-delete": "deleteBookmark"
-        "mouseenter .bookmark-delete": "setToDelete"
-        "mouseleave .bookmark-delete": "setToNotDelete"
+        "click .remove": "remove"
 
     constructor: (@model) ->
         super()
 
+
+    getRenderData: () ->
+        model = super().model
+        if not model.created
+            model.created = "just now"
+        else
+            local = new Date model.created
+            local.setMinutes local.getMinutes() - local.getTimezoneOffset()
+            model.created = local.toLocaleDateString undefined, 
+                "day": "2-digit"
+                "month": "2-digit"
+                "year": "numeric"
+        model
+
     template: ->
         template = require "./templates/bookmark"
-        template @getRenderData().model
+        template @getRenderData()
 
     render: () ->
         @model.cleanValues()
         super()
 
-    setToDelete: ->
-        @$el.addClass("to-delete")
-
-    setToNotDelete: ->
-        @$el.removeClass("to-delete")
-
-    deleteBookmark: ->
-        title = @$el.find(".bookmark-title").html()
-        $("#bookmark-add-link-url").val(@$el.find(".bookmark-title a").attr("href"))
-        $("#bookmark-add-link-title").val(@$el.find(".bookmark-title a").text())
-        $("#bookmark-add-link-tags").val(@$el.find(".bookmark-tags span").text())
-        $("#bookmark-add-link-description").val(@$el.find(".bookmark-description p").text())
-        $("#bookmark-add-full").show()
+    delete: () =>
+        title = @$el.find(".title").text()
         @model.destroy
             success: =>
                 @destroy()
                 window.featureList.remove("bookmark-title", title)
-                View.log "" + title + " removed and placed in form"
+                View.log "" + title + " removed."
             error: =>
                 View.error "Server error occured, bookmark was not deleted."
+
+    remove: ->
+        title = @$el.find(".title").text()
+        View.confirm "Do you really want to remove " + title + "?", @delete

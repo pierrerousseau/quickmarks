@@ -17,6 +17,9 @@ body {
   color: #58493e;
   font-family: "Open Sans", sans-serif;
 }
+.row {
+  margin: 0;
+}
 #content .btn {
   font-weight: bolder;
   font-size: 1.5em;
@@ -132,9 +135,11 @@ body {
   list-style: none;
 }
 #bookmarks .bookmark {
-  margin: 0 15%;
+  margin: 0 10%;
   padding: 0.5em 0 0 0;
   font-size: 1.5em;
+  -webkit-border-radius: 25px;
+  border-radius: 25px;
 }
 #bookmarks .bookmark .row {
   padding: 0;
@@ -145,30 +150,41 @@ body {
 #bookmarks .bookmark .title a:visited {
   font-size: 1.1em;
   font-weight: bolder;
-  text-align: left;
   color: #58493e;
 }
 #bookmarks .bookmark .url {
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
   font-style: italic;
-  text-align: center;
+}
+#bookmarks .bookmark .url:hover {
+  white-space: initial;
+  word-wrap: break-word;
+  overflow: initial;
 }
 #bookmarks .bookmark .url a,
 #bookmarks .bookmark .url a:active,
 #bookmarks .bookmark .url a:visited {
   color: #58493e;
 }
-#bookmarks .bookmark .tags {
+#bookmarks .bookmark .infos {
   opacity: 0.9;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
   filter: alpha(opacity=90);
   text-align: right;
 }
+#bookmarks .bookmark .infos .date {
+  font-size: 0.8em;
+  font-style: italic;
+}
 #bookmarks .bookmark .description {
   opacity: 0.9;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=90);
   filter: alpha(opacity=90);
-  border-bottom: 1px #ccc solid;
   padding: 1em;
+  border-bottom: 1px #ccc solid;
 }
 #bookmarks .bookmark:hover {
   background: #f4f3f0;
@@ -176,6 +192,32 @@ body {
 #bookmarks .bookmark:hover .title a,
 #bookmarks .bookmark:hover .title a:active,
 #bookmarks .bookmark:hover .title a:visited {
+  color: #ec4e1b;
+}
+#bookmarks .bookmark:hover .description {
+  -webkit-border-radius: 0 0 0 25px;
+  border-radius: 0 0 0 25px;
+}
+#bookmarks .bookmark:hover .actions {
+  display: block;
+}
+#bookmarks .bookmark .actions {
+  display: none;
+  text-align: right;
+}
+#bookmarks .bookmark .actions button {
+  background: inherit;
+  color: inherit;
+  text-align: center;
+  font-size: 1em;
+  font-weight: lighter;
+  border: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+#bookmarks .bookmark .actions button:hover {
   color: #ec4e1b;
 }
 

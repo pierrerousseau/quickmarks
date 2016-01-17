@@ -39,12 +39,10 @@ module.exports = class AppView extends View
                                    "bookmark-url", 
                                    "bookmark-tags", 
                                    "bookmark-description"]
-                window.featureList = new List("bookmarks",
-                                              window.sortOptions)
+                window.featureList = new List "bookmarks", window.sortOptions
                 View.log "bookmarks loaded"
 
     bookmarkLink: (evt) ->
-        console.log("ok")
         evt.preventDefault()
 
         url         = $("#add-link").val()
@@ -63,6 +61,7 @@ module.exports = class AppView extends View
                 "success": =>
                     $(".bookmark:first").addClass "new"
                     View.log "" + (title || url) + " added"
+                    $("#add-modal").modal "hide"
                 "error": =>
                     View.error "Server error occured, " +
                                "bookmark was not saved"
