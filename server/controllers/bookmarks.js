@@ -103,3 +103,17 @@ module.exports.destroy = function(req, res) {
     };
   })(this));
 };
+
+module.exports.update = function(req, res) {
+  return Bookmark.find(req.params.id, (function(_this) {
+    return function(err, bookmark) {
+      return bookmark.updateAttributes(req.body, function(err) {
+        if (err) {
+          return res.error(500, "Update failed.", err);
+        } else {
+          return res.send(bookmark, 201);
+        }
+      });
+    };
+  })(this));
+};

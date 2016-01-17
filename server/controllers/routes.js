@@ -9,7 +9,8 @@ module.exports = {
     post: bookmarks.create
   },
   'bookmarks/:id': {
-    "delete": bookmarks.destroy
+    "delete": bookmarks.destroy,
+    put: bookmarks.update
   },
   'export': {
     get: bookmarks["export"]

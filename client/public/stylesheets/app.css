@@ -81,20 +81,24 @@ body {
 #header .help-block {
   text-align: center;
 }
-#add-modal .modal-content {
+#add-modal .modal-content,
+#edit-modal .modal-content {
   background: #ecebe9;
   color: #676766;
 }
-#add-modal .modal-content .modal-header {
+#add-modal .modal-content .modal-header,
+#edit-modal .modal-content .modal-header {
   font-size: 1.5em;
   text-align: center;
 }
-#add-modal .modal-content .modal-footer button {
+#add-modal .modal-content .modal-footer button,
+#edit-modal .modal-content .modal-footer button {
   border: 0;
   background: #616164;
   color: #d4cfc7;
 }
-#add-modal .modal-content .modal-footer span {
+#add-modal .modal-content .modal-footer span,
+#edit-modal .modal-content .modal-footer span {
   margin-right: 0.25em;
 }
 #tags-toggle {

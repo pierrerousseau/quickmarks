@@ -79,3 +79,11 @@ module.exports.destroy = (req, res) ->
 
             res.send success: 'Bookmark successfully deleted'
             bookmark = null
+
+module.exports.update = (req, res) ->
+    Bookmark.find req.params.id, (err, bookmark) =>
+        bookmark.updateAttributes req.body, (err) ->
+            if err
+                return res.error 500, "Update failed.", err
+            else
+                res.send bookmark, 201

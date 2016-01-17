@@ -5,35 +5,25 @@ module.exports = class BookmarkView extends View
     tagName: "li"
 
     events:
-        "click .remove": "remove"
+        "click .edit": "edit"
+        "click .remove": "erase"
 
     constructor: (@model) ->
         super()
 
-
-    getRenderData: () ->
-        model = super().model
-        if not model.created
-            model.created = "just now"
-        else
-            local = new Date model.created
-            local.setMinutes local.getMinutes() - local.getTimezoneOffset()
-            model.created = local.toLocaleDateString undefined, 
-                "day": "2-digit"
-                "month": "2-digit"
-                "year": "numeric"
-        model
-
     template: ->
         template = require "./templates/bookmark"
-        template @getRenderData()
+        template @getRenderData().model
 
     render: () ->
         @model.cleanValues()
         super()
 
+    title: () ->
+        $.trim(@model.get "title") || @model.get "url"
+
     delete: () =>
-        title = @$el.find(".title").text()
+        title = @title()
         @model.destroy
             success: =>
                 @destroy()
@@ -42,6 +32,37 @@ module.exports = class BookmarkView extends View
             error: =>
                 View.error "Server error occured, bookmark was not deleted."
 
-    remove: ->
-        title = @$el.find(".title").text()
-        View.confirm "Do you really want to remove " + title + "?", @delete
+    erase: () ->
+        View.confirm "Do you really want to remove " + @title() + "?", @delete
+
+
+    edit: () ->
+        form   = $("#bookmark-edit")
+
+        $("#edit-title").val @model.get "title"
+        $("#edit-link").val @model.get "url"
+        $("#edit-description").val @model.get "description"
+        $("#edit-tags").val @model.get "readableTags"
+
+        modal = $("#edit-modal")
+        modal.modal "show"
+
+        form.on "submit", (evt) =>
+            evt.preventDefault()
+
+            newValues =
+                "title": $("#edit-title").val()
+                "url": $("#edit-link").val()
+                "description": $("#edit-description").val()
+                "tags": @model.setTags $("#edit-tags").val()
+
+            @model.save newValues,
+                "success": =>
+                    title = (@model.attributes.title || @model.attributes.url)
+                    View.log "" + title + " modified."
+                    modal.modal "hide"
+                    @render()
+                "error": (a, b, c) =>
+                    console.log("err", a, b, c)
+                    View.error "Server error occured, " +
+                               "bookmark was not saved"

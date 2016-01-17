@@ -37,6 +37,8 @@ module.exports = class View extends Backbone.View
                 "sticker": false
             "width": "40%").get().on "pnotify.confirm", () ->
                 cb()
+                false
+        false
 
     @error: (text) ->
         $ -> new PNotify
