@@ -519,7 +519,8 @@ module.exports = AppView = (function(superClass) {
   AppView.prototype.events = {
     "submit #bookmark-add": "bookmarkLink",
     "shown.bs.modal #add-modal": "showAddForm",
-    "shown.bs.modal #edit-modal": "showAddForm"
+    "shown.bs.modal #edit-modal": "showAddForm",
+    "submit .search": "search"
   };
 
   AppView.prototype.template = function() {
@@ -547,9 +548,9 @@ module.exports = AppView = (function(superClass) {
         return function() {
           _this.stopLoader();
           window.sortOptions = {
-            "valueNames": ["bookmark-title", "bookmark-url", "bookmark-tags", "bookmark-description"]
+            "valueNames": ["title", "url", "tags", "description"]
           };
-          window.featureList = new List("bookmarks", window.sortOptions);
+          window.featureList = new List("content", window.sortOptions);
           return View.log("bookmarks loaded");
         };
       })(this)
@@ -602,6 +603,10 @@ module.exports = AppView = (function(superClass) {
     } else {
       return View.error("Url field is required");
     }
+  };
+
+  AppView.prototype.search = function(evt) {
+    return false;
   };
 
   return AppView;

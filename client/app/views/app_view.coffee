@@ -10,6 +10,7 @@ module.exports = class AppView extends View
         "submit #bookmark-add": "bookmarkLink"
         "shown.bs.modal #add-modal": "showAddForm"
         "shown.bs.modal #edit-modal": "showAddForm"
+        "submit .search": "search"
 
     template: ->
         require "./templates/home"
@@ -35,11 +36,11 @@ module.exports = class AppView extends View
             success: =>
                 @stopLoader()
                 window.sortOptions =
-                    "valueNames": ["bookmark-title", 
-                                   "bookmark-url", 
-                                   "bookmark-tags", 
-                                   "bookmark-description"]
-                window.featureList = new List "bookmarks", window.sortOptions
+                    "valueNames": ["title", 
+                                   "url", 
+                                   "tags", 
+                                   "description"]
+                window.featureList = new List "content", window.sortOptions
                 View.log "bookmarks loaded"
 
     showAddForm: (evt) ->
@@ -77,3 +78,6 @@ module.exports = class AppView extends View
                                "bookmark was not saved"
         else
             View.error "Url field is required"
+
+    search: (evt) ->
+        false
