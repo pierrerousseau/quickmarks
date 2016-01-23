@@ -7,5 +7,7 @@ module.exports =
     'bookmarks/:id':
         delete: bookmarks.destroy
         put: bookmarks.update
+     'tags':
+        get: bookmarks.allTags
     'export':
         get: bookmarks.export

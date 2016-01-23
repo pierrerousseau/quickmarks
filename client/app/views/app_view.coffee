@@ -2,6 +2,8 @@ View          = require "../lib/view"
 AppRouter     = require "../routers/app_router"
 BookmarksView = require "./bookmarks_view"
 Bookmark      = require "../models/bookmark"
+TagsView      = require "./tags_view"
+Tag           = require "../models/tag"
 
 module.exports = class AppView extends View
     el: "body.application"
@@ -11,6 +13,8 @@ module.exports = class AppView extends View
         "shown.bs.modal #add-modal": "showAddForm"
         "shown.bs.modal #edit-modal": "showAddForm"
         "submit .search": "search"
+        "click .tags-show": "showTags"
+        "click .tags-hide": "hideTags"
 
     template: ->
         require "./templates/home"
@@ -42,6 +46,12 @@ module.exports = class AppView extends View
                                    "description"]
                 window.featureList = new List "content", window.sortOptions
                 View.log "bookmarks loaded"
+
+        @tagsView = new TagsView()
+        @tagsView.collection.fetch
+            success: =>
+                @tagsView.renderAll()
+
 
     showAddForm: (evt) ->
         $("#add-link").focus()
@@ -81,3 +91,13 @@ module.exports = class AppView extends View
 
     search: (evt) ->
         false
+
+    showTags: () ->
+        $(".tag").addClass("tag-show")
+        $(".tags-show").hide()
+        $(".tags-hide").show()
+
+    hideTags: () ->
+        $(".tag").removeClass("tag-show")
+        $(".tags-hide").hide()
+        $(".tags-show").show()

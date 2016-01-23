@@ -13,6 +13,50 @@ module.exports.all = (req, res) ->
             return
         res.send bookmarks
 
+module.exports.create = (req, res) ->
+    Bookmark.create req.body, (err, bookmark) =>
+        if err
+            console.error err
+            SendError res, 'while creating bookmark'
+            return
+        res.send bookmark
+
+module.exports.destroy = (req, res) ->
+    Bookmark.find req.params.id, (err, bookmark) =>
+        if err
+            SendError res, 'while finding bookmark with id ' + req.params.id
+            return
+
+        if not bookmark
+            SendError res, 'bookmark not found', 404
+            return
+
+        bookmark.destroy (err) ->
+            if err
+                console.error err
+                SendError res, 'while destroying bookmark'
+                return
+
+            res.send success: 'Bookmark successfully deleted'
+            bookmark = null
+
+module.exports.update = (req, res) ->
+    Bookmark.find req.params.id, (err, bookmark) =>
+        bookmark.updateAttributes req.body, (err) ->
+            if err
+                return res.error 500, "Update failed.", err
+            else
+                res.send bookmark, 201
+
+module.exports.allTags = (req, res) ->
+    Bookmark.allTags (err, tags) ->
+        if err
+            console.error err
+            SendError res, 'while retrieving data'
+            return
+        res.send tags
+
+
 EXPORT_HEADER = """
 <!DOCTYPE NETSCAPE-Bookmark-file-1>
   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
@@ -52,38 +96,3 @@ module.exports.export = (req, res) ->
         exported += EXPORT_FOOTER
         res.setHeader 'Content-disposition', 'attachment; filename=bookmarks.html'
         res.send exported
-
-module.exports.create = (req, res) ->
-    Bookmark.create req.body, (err, bookmark) =>
-        if err
-            console.error err
-            SendError res, 'while creating bookmark'
-            return
-        res.send bookmark
-
-module.exports.destroy = (req, res) ->
-    Bookmark.find req.params.id, (err, bookmark) =>
-        if err
-            SendError res, 'while finding bookmark with id ' + req.params.id
-            return
-
-        if not bookmark
-            SendError res, 'bookmark not found', 404
-            return
-
-        bookmark.destroy (err) ->
-            if err
-                console.error err
-                SendError res, 'while destroying bookmark'
-                return
-
-            res.send success: 'Bookmark successfully deleted'
-            bookmark = null
-
-module.exports.update = (req, res) ->
-    Bookmark.find req.params.id, (err, bookmark) =>
-        bookmark.updateAttributes req.body, (err) ->
-            if err
-                return res.error 500, "Update failed.", err
-            else
-                res.send bookmark, 201

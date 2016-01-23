@@ -19,6 +19,7 @@ body {
 }
 .row {
   margin: 0;
+  padding: 0;
 }
 #content .btn {
   font-weight: bolder;
@@ -45,26 +46,71 @@ body {
   padding-left: 10%;
   padding-right: 10%;
 }
+#header .row {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-box;
+  display: -webkit-flex;
+  display: box;
+  display: flex;
+}
 #header button {
   background: #d4cfc7;
   color: #616164;
-  height: 2.5em;
-  padding-left: 1em;
-  padding-right: 1em;
+  height: 2em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
 #header .add {
   text-align: right;
+  margin: auto;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  -ms-box-flex: 1;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -ms-box-flex: 1;
+  box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  margin-top: 0;
 }
 #header .or {
-  margin-top: 1em;
   text-align: center;
+  margin: auto;
+  -webkit-box-flex: 0.5;
+  -moz-box-flex: 0.5;
+  -o-box-flex: 0.5;
+  -ms-box-flex: 0.5;
+  -webkit-box-flex: 0.5;
+  -moz-box-flex: 0.5;
+  -ms-box-flex: 0.5;
+  box-flex: 0.5;
+  -webkit-flex: 0.5;
+  flex: 0.5;
+  margin-top: 1em;
+}
+#header .search {
+  margin: auto;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -o-box-flex: 1;
+  -ms-box-flex: 1;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -ms-box-flex: 1;
+  box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  margin-top: 0;
 }
 #header .search input {
   background: #d4cfc7;
   color: #616164;
-  height: 2.5em;
-  padding-left: 1em;
-  padding-right: 1em;
+  height: 2em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
 #header .search .input-group-addon {
   background: #d4cfc7;
@@ -108,6 +154,7 @@ body {
 }
 #tags-toggle .tags-show,
 #tags-toggle .tags-hide {
+  cursor: pointer;
   text-align: center;
   background: #616167;
   color: #d4cfc7;
@@ -123,9 +170,26 @@ body {
   display: none;
 }
 #tags {
+  padding: 0.2em 20%;
   min-height: 2em;
   background: #616167;
   color: #d4cfc7;
+  text-align: center;
+  font-weight: bolder;
+}
+#tags .tag {
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  display: none;
+  padding: 0.2em 0.4em;
+}
+#tags .tag:hover {
+  cursor: pointer;
+  background: #d4cfc7;
+  color: #616164;
+}
+#tags .tag-show {
+  display: inline-block;
 }
 #loader {
   background: #ecebe9;

@@ -30,6 +30,7 @@ body
 
 .row
     margin: 0
+    padding: 0
 
 #content
     .btn
@@ -54,24 +55,34 @@ body
     padding-bottom: 3em
     padding-left: 10%
     padding-right: 10%
+    .row
+        display: flex
     button
         background: button-background
         color: button-color
-        height: 2.5em
-        padding-left: 1em
-        padding-right: 1em
+        height: 2em
+        padding-left: .5em
+        padding-right: .5em
     .add 
         text-align: right
+        margin: auto
+        flex: 1
+        margin-top: 0
     .or
-        margin-top: 1em
         text-align: center
+        margin: auto
+        flex: .5
+        margin-top: 1em
     .search
+        margin: auto
+        flex: 1
+        margin-top: 0
         input
             background: button-background
             color: button-color
-            height: 2.5em
-            padding-left: 1em
-            padding-right: 1em
+            height: 2em
+            padding-left: .5em
+            padding-right: .5em
         .input-group-addon
             background: button-background
             color: button-color
@@ -106,8 +117,10 @@ body
     color: main-color
     background: main-background
     font-size: 1.5em
+
     .tags-show
     .tags-hide
+        cursor: pointer
         text-align: center
         background: tags-background
         color: tags-color
@@ -120,9 +133,22 @@ body
         display: none
 
 #tags
+    padding: .2em 20%
     min-height: 2em
     background: tags-background
     color: tags-color
+    text-align: center
+    font-weight: bolder
+    .tag
+        border-radius: 5px 
+        display: none
+        padding: .2em .4em
+        &:hover
+            cursor: pointer
+            background: button-background
+            color: button-color
+    .tag-show
+        display: inline-block
 
 #loader
     background: list-background

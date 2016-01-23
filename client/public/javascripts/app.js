@@ -117,6 +117,30 @@ module.exports = BookmarkCollection = (function(superClass) {
 
 });
 
+;require.register("collections/tag_collection", function(exports, require, module) {
+var Tag, TagCollection,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+Tag = require('../models/tag');
+
+module.exports = TagCollection = (function(superClass) {
+  extend(TagCollection, superClass);
+
+  function TagCollection() {
+    return TagCollection.__super__.constructor.apply(this, arguments);
+  }
+
+  TagCollection.prototype.model = Tag;
+
+  TagCollection.prototype.url = 'tags';
+
+  return TagCollection;
+
+})(Backbone.Collection);
+
+});
+
 ;require.register("initialize", function(exports, require, module) {
 if (this.CozyApp == null) {
   this.CozyApp = {};
@@ -472,6 +496,26 @@ module.exports = Bookmark = (function(superClass) {
 
 });
 
+;require.register("models/tag", function(exports, require, module) {
+var Tag,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+module.exports = Tag = (function(superClass) {
+  extend(Tag, superClass);
+
+  function Tag() {
+    return Tag.__super__.constructor.apply(this, arguments);
+  }
+
+  Tag.prototype.urlRoot = 'tags';
+
+  return Tag;
+
+})(Backbone.Model);
+
+});
+
 ;require.register("routers/app_router", function(exports, require, module) {
 var AppRouter,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -495,7 +539,7 @@ module.exports = AppRouter = (function(superClass) {
 });
 
 ;require.register("views/app_view", function(exports, require, module) {
-var AppRouter, AppView, Bookmark, BookmarksView, View,
+var AppRouter, AppView, Bookmark, BookmarksView, Tag, TagsView, View,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -506,6 +550,10 @@ AppRouter = require("../routers/app_router");
 BookmarksView = require("./bookmarks_view");
 
 Bookmark = require("../models/bookmark");
+
+TagsView = require("./tags_view");
+
+Tag = require("../models/tag");
 
 module.exports = AppView = (function(superClass) {
   extend(AppView, superClass);
@@ -520,7 +568,9 @@ module.exports = AppView = (function(superClass) {
     "submit #bookmark-add": "bookmarkLink",
     "shown.bs.modal #add-modal": "showAddForm",
     "shown.bs.modal #edit-modal": "showAddForm",
-    "submit .search": "search"
+    "submit .search": "search",
+    "click .tags-show": "showTags",
+    "click .tags-hide": "hideTags"
   };
 
   AppView.prototype.template = function() {
@@ -543,7 +593,7 @@ module.exports = AppView = (function(superClass) {
   AppView.prototype.afterRender = function() {
     this.startLoader();
     this.bookmarksView = new BookmarksView();
-    return this.bookmarksView.collection.fetch({
+    this.bookmarksView.collection.fetch({
       success: (function(_this) {
         return function() {
           _this.stopLoader();
@@ -552,6 +602,14 @@ module.exports = AppView = (function(superClass) {
           };
           window.featureList = new List("content", window.sortOptions);
           return View.log("bookmarks loaded");
+        };
+      })(this)
+    });
+    this.tagsView = new TagsView();
+    return this.tagsView.collection.fetch({
+      success: (function(_this) {
+        return function() {
+          return _this.tagsView.renderAll();
         };
       })(this)
     });
@@ -607,6 +665,18 @@ module.exports = AppView = (function(superClass) {
 
   AppView.prototype.search = function(evt) {
     return false;
+  };
+
+  AppView.prototype.showTags = function() {
+    $(".tag").addClass("tag-show");
+    $(".tags-show").hide();
+    return $(".tags-hide").show();
+  };
+
+  AppView.prototype.hideTags = function() {
+    $(".tag").removeClass("tag-show");
+    $(".tags-hide").hide();
+    return $(".tags-show").show();
   };
 
   return AppView;
@@ -770,6 +840,117 @@ module.exports = BookmarksView = (function(superClass) {
 
 });
 
+;require.register("views/tag_view", function(exports, require, module) {
+var TagView, View,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+View = require("../lib/view");
+
+module.exports = TagView = (function(superClass) {
+  extend(TagView, superClass);
+
+  TagView.prototype.className = "tag";
+
+  TagView.prototype.tagName = "span";
+
+  TagView.prototype.events = {
+    "click": "search"
+  };
+
+  function TagView(model) {
+    this.values = model;
+    TagView.__super__.constructor.call(this);
+  }
+
+  TagView.prototype.getRenderData = function() {
+    return this.values;
+  };
+
+  TagView.prototype.template = function() {
+    var template;
+    template = require("./templates/tag");
+    return template(this.getRenderData());
+  };
+
+  TagView.prototype.search = function() {
+    $(".search input").val(this.values.tag);
+    return window.featureList.search(this.values.tag, {
+      "tags": "tags"
+    });
+  };
+
+  return TagView;
+
+})(View);
+
+});
+
+;require.register("views/tags_view", function(exports, require, module) {
+var TagCollection, TagView, TagsView, ViewCollection,
+  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+ViewCollection = require('../lib/view_collection');
+
+TagCollection = require('../collections/tag_collection');
+
+TagView = require('./tag_view');
+
+module.exports = TagsView = (function(superClass) {
+  extend(TagsView, superClass);
+
+  function TagsView() {
+    this.renderAll = bind(this.renderAll, this);
+    return TagsView.__super__.constructor.apply(this, arguments);
+  }
+
+  TagsView.prototype.el = '#tags';
+
+  TagsView.prototype.view = TagView;
+
+  TagsView.prototype.renderAll = function() {
+    var average, model, score, scores, tag, total, view;
+    scores = {};
+    total = 0;
+    this.collection.each(function(elem) {
+      var tag;
+      if ((elem != null) && (elem.get("tag") != null)) {
+        tag = elem.get("tag");
+        if ((tag != null) && (scores[tag] != null)) {
+          return scores[tag] += 1;
+        } else {
+          scores[tag] = 1;
+          return total += 1;
+        }
+      }
+    });
+    average = this.collection.length / total;
+    console.log(average, this.collection.length, total);
+    for (tag in scores) {
+      score = scores[tag];
+      model = {
+        tag: tag,
+        score: 1 + (score / average)
+      };
+      view = new this.view(model);
+      this.$el.prepend(view.render().el);
+      this.add(view);
+    }
+    return this;
+  };
+
+  TagsView.prototype.initialize = function() {
+    return this.collection = new TagCollection(this);
+  };
+
+  return TagsView;
+
+})(ViewCollection);
+
+});
+
 ;require.register("views/templates/bookmark", function(exports, require, module) {
 module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
 attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
@@ -792,7 +973,21 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><div id="add-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Add a new bookmark</h2></div><form id="bookmark-add" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="add-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="add-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="add-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="add-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="add-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="add-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="add-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="add-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Add</button></div></form></div></div></div><div id="edit-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Edit the bookmark</h2></div><form id="bookmark-edit" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="edit-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="edit-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="edit-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="edit-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="edit-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="edit-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="edit-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="edit-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Save</button></div></form></div></div></div><div id="header"><div class="row"><div class="add col-xs-4"><button type="button" data-toggle="modal" data-target="#add-modal" class="btn btn-default add-bookmark"> <span class="glyphicon glyphicon-plus"></span>Add a new bookmark</button></div><div class="or col-xs-2">or</div><form class="search col-xs-6"><div class="input-group"><input type="text" placeholder="Search for a bookmark" class="form-control"/><div class="input-group-addon"><img src="icons/search.svg" alt="search"/></div></div><p class="help-block">Type a keyword, we will search for it in your saved bookmarks </p></form></div></div><div id="tags-toggle" class="row"><div class="buttons col-xs-offset-10 col-xs-2"><div class="tags-show"><span class="glyphicon glyphicon-chevron-down"></span>show tags</div><div class="tags-hide"><span class="glyphicon glyphicon-chevron-up"></span>hide tags</div></div></div><div id="tags"></div><div id="loader" class="loader-inner ball-pulse"><p>Loading bookmarks, please wait ...</p></div><div id="bookmarks"><ul class="list"></ul></div></div>');
+buf.push('<div id="content"><div id="add-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Add a new bookmark</h2></div><form id="bookmark-add" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="add-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="add-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="add-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="add-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="add-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="add-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="add-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="add-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Add</button></div></form></div></div></div><div id="edit-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Edit the bookmark</h2></div><form id="bookmark-edit" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="edit-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="edit-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="edit-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="edit-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="edit-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="edit-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="edit-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="edit-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Save</button></div></form></div></div></div><div id="header"><div class="row"><div class="add"><button type="button" data-toggle="modal" data-target="#add-modal" class="btn btn-default add-bookmark"> <span class="glyphicon glyphicon-plus"></span>Add a new bookmark</button></div><div class="or">or</div><form class="search"><div class="input-group"><input type="text" placeholder="Search for a bookmark" class="form-control"/><div class="input-group-addon"><img src="icons/search.svg" alt="search"/></div></div><p class="help-block">Type a keyword, we will search for it in your saved bookmarks </p></form></div></div><div id="tags-toggle" class="row"><div class="buttons col-xs-offset-10"><div class="tags-show"><span class="glyphicon glyphicon-chevron-down"></span>show tags</div><div class="tags-hide"><span class="glyphicon glyphicon-chevron-up"></span>hide tags</div></div></div><div id="tags"></div><div id="loader" class="loader-inner ball-pulse"><p>Loading bookmarks, please wait ...</p></div><div id="bookmarks"><ul class="list"></ul></div></div>');
+}
+return buf.join("");
+};
+});
+
+;require.register("views/templates/tag", function(exports, require, module) {
+module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+var buf = [];
+with (locals || {}) {
+var interp;
+buf.push('<span');
+buf.push(attrs({ 'style':("font-size:" + (score) + "em") }, {"style":true}));
+buf.push('>' + escape((interp = tag) == null ? '' : interp) + '</span>');
 }
 return buf.join("");
 };

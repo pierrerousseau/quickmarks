@@ -25,3 +25,7 @@ module.exports = Bookmark = americano.getModel('Bookmark', {
 Bookmark.all = function(params, callback) {
   return Bookmark.request("byDate", params, callback);
 };
+
+Bookmark.allTags = function(params, callback) {
+  return Bookmark.request("tags", params, callback);
+};

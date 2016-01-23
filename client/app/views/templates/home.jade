@@ -65,12 +65,12 @@
 
     #header
         div(class="row")
-            .add(class="col-xs-4")
+            .add
                 button(class="btn btn-default add-bookmark", type="button", data-toggle="modal", data-target="#add-modal") 
                     span(class="glyphicon glyphicon-plus")
                     | Add a new bookmark
-            .or(class="col-xs-2") or
-            form.search(class="col-xs-6")
+            .or or
+            form.search
                 div(class="input-group")
                     input(class="form-control", type="text", placeholder="Search for a bookmark")
                     div(class="input-group-addon")
@@ -78,7 +78,7 @@
                 p(class="help-block") Type a keyword, we will search for it in your saved bookmarks 
 
     #tags-toggle(class="row")
-        .buttons(class="col-xs-offset-10 col-xs-2")
+        .buttons(class="col-xs-offset-10")
             .tags-show
                 span(class="glyphicon glyphicon-chevron-down")
                 | show tags

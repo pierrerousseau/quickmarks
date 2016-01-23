@@ -27,44 +27,6 @@ module.exports.all = function(req, res) {
   });
 };
 
-EXPORT_HEADER = "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n  <META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=UTF-8\">\n      <TITLE>Bookmarks</TITLE>\n      <H1>Bookmarks Menu</H1>\n      <DL><DT><H3>Cozy Bookmark</H3>\n        <DL>";
-
-EXPORT_FOOTER = "  </DL>\n</DL>";
-
-MakeLink = function(name, link, date, tags) {
-  var ret;
-  date = +date;
-  ret = "<DT><A HREF='" + link + "' ADD_DATE='" + date + "' LAST_MODIFIED='" + date + "'";
-  if (tags != null) {
-    ret += " TAGS='" + tags + "'";
-  }
-  ret += ">" + name + "</A></DT>\n";
-  return ret;
-};
-
-module.exports["export"] = function(req, res) {
-  return Bookmark.all(function(err, bookmarks) {
-    var b, creation_date, exported, link, name, tags, _i, _len;
-    if (err) {
-      console.error(err);
-      SendError(res, 'while retrieving data for export');
-      return;
-    }
-    exported = EXPORT_HEADER;
-    for (_i = 0, _len = bookmarks.length; _i < _len; _i++) {
-      b = bookmarks[_i];
-      name = b.title;
-      link = b.url;
-      creation_date = new Date(b.created);
-      tags = b.tags;
-      exported += MakeLink(name, link, creation_date, tags);
-    }
-    exported += EXPORT_FOOTER;
-    res.setHeader('Content-disposition', 'attachment; filename=bookmarks.html');
-    return res.send(exported);
-  });
-};
-
 module.exports.create = function(req, res) {
   return Bookmark.create(req.body, (function(_this) {
     return function(err, bookmark) {
@@ -116,4 +78,53 @@ module.exports.update = function(req, res) {
       });
     };
   })(this));
+};
+
+module.exports.allTags = function(req, res) {
+  return Bookmark.allTags(function(err, tags) {
+    if (err) {
+      console.error(err);
+      SendError(res, 'while retrieving data');
+      return;
+    }
+    return res.send(tags);
+  });
+};
+
+EXPORT_HEADER = "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n  <META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=UTF-8\">\n      <TITLE>Bookmarks</TITLE>\n      <H1>Bookmarks Menu</H1>\n      <DL><DT><H3>Cozy Bookmark</H3>\n        <DL>";
+
+EXPORT_FOOTER = "  </DL>\n</DL>";
+
+MakeLink = function(name, link, date, tags) {
+  var ret;
+  date = +date;
+  ret = "<DT><A HREF='" + link + "' ADD_DATE='" + date + "' LAST_MODIFIED='" + date + "'";
+  if (tags != null) {
+    ret += " TAGS='" + tags + "'";
+  }
+  ret += ">" + name + "</A></DT>\n";
+  return ret;
+};
+
+module.exports["export"] = function(req, res) {
+  return Bookmark.all(function(err, bookmarks) {
+    var b, creation_date, exported, link, name, tags, _i, _len;
+    if (err) {
+      console.error(err);
+      SendError(res, 'while retrieving data for export');
+      return;
+    }
+    exported = EXPORT_HEADER;
+    for (_i = 0, _len = bookmarks.length; _i < _len; _i++) {
+      b = bookmarks[_i];
+      name = b.title;
+      link = b.url;
+      creation_date = new Date(b.created);
+      tags = b.tags;
+      exported += MakeLink(name, link, creation_date, tags);
+    }
+    exported += EXPORT_FOOTER;
+    res.setHeader('Content-disposition', 'attachment; filename=bookmarks.html');
+    return res.send(exported);
+  });
 };
