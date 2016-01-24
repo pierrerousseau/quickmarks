@@ -570,7 +570,10 @@ module.exports = AppView = (function(superClass) {
     "shown.bs.modal #edit-modal": "showAddForm",
     "submit .search": "search",
     "click .tags-show": "showTags",
-    "click .tags-hide": "hideTags"
+    "click .tags-hide": "hideTags",
+    "click .import": "import",
+    "change .import-file": "uploadFile",
+    "click .export": "export"
   };
 
   AppView.prototype.template = function() {
@@ -634,7 +637,6 @@ module.exports = AppView = (function(superClass) {
     if ((url != null ? url.length : void 0) > 0) {
       title = $("#add-title").val();
       description = $("#add-description").val();
-      console.log(Bookmark);
       bookmark = new Bookmark();
       bookmark.set({
         "title": title,
@@ -677,6 +679,91 @@ module.exports = AppView = (function(superClass) {
     $(".tag").removeClass("tag-show");
     $(".tags-hide").hide();
     return $(".tags-show").show();
+  };
+
+  AppView.prototype.addBookmarkFromFile = function(link, others) {
+    var $link, bookmark, description, next, title, url;
+    $link = $(link);
+    if (!!$link.attr("href").indexOf("place") && !$link.attr("feedurl")) {
+      url = $link.attr("href");
+      title = $link.text();
+      description = "";
+      next = $link.parents(":first").next();
+      if (next.is("dd")) {
+        description = next.text();
+      }
+      bookmark = new Bookmark({
+        title: title,
+        url: url,
+        tags: [],
+        description: description
+      });
+      return this.bookmarksView.collection.create(bookmark, {
+        success: (function(_this) {
+          return function() {
+            var imported;
+            imported = $(".import .done");
+            if (imported.text()) {
+              imported.text(parseInt(imported.text()) + 1);
+            } else {
+              imported.text(1);
+            }
+            return _this.addBookmarkFromFile(others[0], others.slice(1));
+          };
+        })(this),
+        error: (function(_this) {
+          return function() {
+            var notImported;
+            notImported = $(".import .failed");
+            if (notImported.text()) {
+              notImported.text(parseInt(notImported.text()) + 1);
+            } else {
+              notImported.text(1);
+            }
+            return _this.addBookmarkFromFile(others[0], others.slice(1));
+          };
+        })(this)
+      });
+    }
+  };
+
+  AppView.prototype.addBookmarksFromFile = function(file) {
+    var importButton, links, loaded;
+    importButton = $(".import button");
+    loaded = $(file);
+    links = loaded.find("dt a");
+    this.addBookmarkFromFile(links[0], links.slice(1));
+    return importButton.removeClass("doing");
+  };
+
+  AppView.prototype.uploadFile = function(evt) {
+    var file, importButton, reader;
+    importButton = $(".import button");
+    if (importButton.hasClass("doing")) {
+      return View.error("I'm working!");
+    } else {
+      file = evt.target.files[0];
+      if (file.type !== "text/html") {
+        View.error("This file cannot be imported");
+        return;
+      }
+      importButton.addClass("doing");
+      reader = new FileReader();
+      reader.onload = (function(_this) {
+        return function(evt) {
+          return _this.addBookmarksFromFile(evt.target.result);
+        };
+      })(this);
+      return reader.readAsText(file);
+    }
+  };
+
+  AppView.prototype["import"] = function() {
+    return $(".import-file").click();
+  };
+
+  AppView.prototype["export"] = function() {
+    return window.location = "export";
   };
 
   return AppView;
@@ -777,7 +864,6 @@ module.exports = BookmarkView = (function(superClass) {
             return _this.render();
           },
           "error": function(a, b, c) {
-            console.log("err", a, b, c);
             return View.error("Server error occured, " + "bookmark was not saved");
           }
         });
@@ -927,12 +1013,11 @@ module.exports = TagsView = (function(superClass) {
       }
     });
     average = this.collection.length / total;
-    console.log(average, this.collection.length, total);
     for (tag in scores) {
       score = scores[tag];
       model = {
         tag: tag,
-        score: 1 + (score / average)
+        score: 1 + .3 * (score / average)
       };
       view = new this.view(model);
       this.$el.prepend(view.render().el);
@@ -973,7 +1058,7 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><div id="add-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Add a new bookmark</h2></div><form id="bookmark-add" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="add-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="add-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="add-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="add-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="add-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="add-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="add-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="add-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Add</button></div></form></div></div></div><div id="edit-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Edit the bookmark</h2></div><form id="bookmark-edit" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="edit-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="edit-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="edit-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="edit-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="edit-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="edit-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="edit-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="edit-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Save</button></div></form></div></div></div><div id="header"><div class="row"><div class="add"><button type="button" data-toggle="modal" data-target="#add-modal" class="btn btn-default add-bookmark"> <span class="glyphicon glyphicon-plus"></span>Add a new bookmark</button></div><div class="or">or</div><form class="search"><div class="input-group"><input type="text" placeholder="Search for a bookmark" class="form-control"/><div class="input-group-addon"><img src="icons/search.svg" alt="search"/></div></div><p class="help-block">Type a keyword, we will search for it in your saved bookmarks </p></form></div></div><div id="tags-toggle" class="row"><div class="buttons col-xs-offset-10"><div class="tags-show"><span class="glyphicon glyphicon-chevron-down"></span>show tags</div><div class="tags-hide"><span class="glyphicon glyphicon-chevron-up"></span>hide tags</div></div></div><div id="tags"></div><div id="loader" class="loader-inner ball-pulse"><p>Loading bookmarks, please wait ...</p></div><div id="bookmarks"><ul class="list"></ul></div></div>');
+buf.push('<div id="content"><div id="add-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Add a new bookmark</h2></div><form id="bookmark-add" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="add-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="add-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="add-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="add-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="add-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="add-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="add-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="add-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Add</button></div></form></div></div></div><div id="edit-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Edit the bookmark</h2></div><form id="bookmark-edit" class="form-horizontal"><div class="modal-body"><div class="form-group"><label for="edit-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="edit-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group"><label for="edit-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="edit-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group"><label for="edit-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="edit-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group"><label for="edit-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="edit-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button><button type="submit" class="btn btn-primary"> <span class="glyphicon glyphicon-plus"> </span>Save</button></div></form></div></div></div><div id="transfer-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button><h2 class="modal-title">Import/Export bookmarks</h2><div class="modal-body"><input type="file" name="import-file" class="import-file"/><div class="import"><button type="button" class="btn btn-primary">Import</button><div class="done"></div><div class="failed"></div></div><div class="export"><button type="button" class="btn btn-primary">Export</button></div></div></div></div></div></div><div id="header"><div class="row"><div class="add"><button type="button" data-toggle="modal" data-target="#add-modal" class="btn btn-default add-bookmark"> <span class="glyphicon glyphicon-plus"></span>Add a new bookmark</button></div><div class="or">or</div><form class="search"><div class="input-group"><input type="text" placeholder="Search for a bookmark" class="form-control"/><div class="input-group-addon"><img src="icons/search.svg" alt="search"/></div></div><p class="help-block">Type a keyword, we will search for it in your saved bookmarks </p></form><div class="transfer"><button title="import/export bookmarks" type="button" data-toggle="modal" data-target="#transfer-modal" class="btn btn-default transfer-bookmarks"> <span class="glyphicon glyphicon-transfer"></span></button></div></div></div><div id="tags-toggle" class="row"><div class="buttons col-xs-offset-10"><div class="tags-show"><span class="glyphicon glyphicon-chevron-down"></span>show tags</div><div class="tags-hide"><span class="glyphicon glyphicon-chevron-up"></span>hide tags</div></div></div><div id="tags"></div><div id="loader" class="loader-inner ball-pulse"><p>Loading bookmarks, please wait ...</p></div><div id="bookmarks"><ul class="list"></ul></div></div>');
 }
 return buf.join("");
 };

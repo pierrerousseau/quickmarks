@@ -127,25 +127,54 @@ body {
 #header .help-block {
   text-align: center;
 }
+#header .transfer {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#header .transfer button {
+  font-size: 1em;
+  padding: 0;
+  background: inherit;
+  border: none;
+  color: #d4cfc7;
+}
 #add-modal .modal-content,
-#edit-modal .modal-content {
+#edit-modal .modal-content,
+#transfer-modal .modal-content {
   background: #ecebe9;
   color: #676766;
 }
 #add-modal .modal-content .modal-header,
-#edit-modal .modal-content .modal-header {
+#edit-modal .modal-content .modal-header,
+#transfer-modal .modal-content .modal-header {
   font-size: 1.5em;
   text-align: center;
 }
+#add-modal .modal-content .modal-body button,
+#edit-modal .modal-content .modal-body button,
+#transfer-modal .modal-content .modal-body button {
+  border: 0;
+  background: #616164;
+  color: #d4cfc7;
+  margin-top: 1em;
+}
 #add-modal .modal-content .modal-footer button,
-#edit-modal .modal-content .modal-footer button {
+#edit-modal .modal-content .modal-footer button,
+#transfer-modal .modal-content .modal-footer button {
   border: 0;
   background: #616164;
   color: #d4cfc7;
 }
 #add-modal .modal-content .modal-footer span,
-#edit-modal .modal-content .modal-footer span {
+#edit-modal .modal-content .modal-footer span,
+#transfer-modal .modal-content .modal-footer span {
   margin-right: 0.25em;
+}
+#add-modal .import-file,
+#edit-modal .import-file,
+#transfer-modal .import-file {
+  display: none;
 }
 #tags-toggle {
   color: #c6c6c6;

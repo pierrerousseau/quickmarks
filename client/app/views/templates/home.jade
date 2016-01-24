@@ -63,6 +63,22 @@
                             span(class="glyphicon glyphicon-plus") 
                             | Save
 
+    #transfer-modal(class="modal fade", tabindex="-1", role="dialog")
+        div(class="modal-dialog")
+            div(class="modal-content")
+                div(class="modal-header")
+                    button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+                        span(aria-hidden="true") &times;
+                    h2(class="modal-title") Import/Export bookmarks
+                    div(class="modal-body")
+                        input(class="import-file", type="file", name="import-file")
+                        .import
+                            button(type="button", class="btn btn-primary") Import
+                            .done
+                            .failed
+                        .export
+                            button(type="button", class="btn btn-primary") Export
+
     #header
         div(class="row")
             .add
@@ -76,6 +92,13 @@
                     div(class="input-group-addon")
                         img(src="icons/search.svg", alt="search")
                 p(class="help-block") Type a keyword, we will search for it in your saved bookmarks 
+            .transfer
+                button(class="btn btn-default transfer-bookmarks", 
+                       title="import/export bookmarks",
+                       type="button", 
+                       data-toggle="modal", 
+                       data-target="#transfer-modal") 
+                    span(class="glyphicon glyphicon-transfer")
 
     #tags-toggle(class="row")
         .buttons(class="col-xs-offset-10")

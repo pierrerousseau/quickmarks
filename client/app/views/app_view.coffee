@@ -15,6 +15,9 @@ module.exports = class AppView extends View
         "submit .search": "search"
         "click .tags-show": "showTags"
         "click .tags-hide": "hideTags"
+        "click .import": "import"
+        "change .import-file": "uploadFile"
+        "click .export": "export"
 
     template: ->
         require "./templates/home"
@@ -70,7 +73,6 @@ module.exports = class AppView extends View
         if url?.length > 0
             title       = $("#add-title").val()
             description = $("#add-description").val()
-            console.log Bookmark
             bookmark = new Bookmark()
             bookmark.set  
                 "title": title
@@ -101,3 +103,64 @@ module.exports = class AppView extends View
         $(".tag").removeClass("tag-show")
         $(".tags-hide").hide()
         $(".tags-show").show()
+
+
+    addBookmarkFromFile: (link, others) ->
+        $link = $ link
+        if !!$link.attr("href").indexOf("place") and not $link.attr("feedurl")
+            url         = $link.attr "href"
+            title       = $link.text()
+            description = ""
+            next = $link.parents(":first").next()
+            if next.is "dd"
+                description = next.text()
+
+            bookmark = new Bookmark
+                title: title
+                url: url
+                tags: []
+                description: description
+            @bookmarksView.collection.create bookmark,
+                success: =>
+                    imported = $ ".import .done"
+                    if imported.text()
+                        imported.text(parseInt(imported.text()) + 1)
+                    else
+                        imported.text(1)
+                    @addBookmarkFromFile others[0], others[1..]
+
+                error: =>
+                    notImported = $ ".import .failed"
+                    if notImported.text()
+                        notImported.text(parseInt(notImported.text()) + 1)
+                    else
+                        notImported.text(1)
+                    @addBookmarkFromFile others[0], others[1..]
+
+    addBookmarksFromFile: (file) ->
+        importButton = $ ".import button"
+        loaded = $ file
+        links  = loaded.find "dt a"
+        @addBookmarkFromFile links[0], links[1..]
+        importButton.removeClass "doing"
+
+    uploadFile: (evt) ->
+        importButton = $ ".import button"
+        if importButton.hasClass "doing"
+            View.error "I'm working!" 
+        else
+            file = evt.target.files[0]
+            if file.type != "text/html"
+                View.error "This file cannot be imported"
+                return
+            importButton.addClass "doing"
+
+            reader = new FileReader()
+            reader.onload = (evt) => @addBookmarksFromFile evt.target.result
+            reader.readAsText file
+
+    import: () ->
+        $(".import-file").click()
+
+    export: () ->
+        window.location = "export"

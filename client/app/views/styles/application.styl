@@ -93,9 +93,20 @@ body
                 height: 2.5em
     .help-block
         text-align: center
+    .transfer
+        position: absolute
+        top: 0
+        right: 0
+        button 
+            font-size: 1em
+            padding: 0
+            background: inherit
+            border: none
+            color: button-color-invert
 
 #add-modal
 #edit-modal
+#transfer-modal
     .modal-content
         background: modal-background
         color: modal-color
@@ -104,6 +115,13 @@ body
             font-size: 1.5em
             text-align: center
 
+        .modal-body
+            button
+                border: 0
+                background: button-background-invert
+                color: button-color-invert
+                margin-top: 1em
+
         .modal-footer
             button
                 border: 0
@@ -111,6 +129,8 @@ body
                 color: button-color-invert
             span
                 margin-right: .25em
+    .import-file
+        display: none
     
 
 #tags-toggle

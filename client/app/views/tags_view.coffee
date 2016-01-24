@@ -19,11 +19,10 @@ module.exports = class TagsView extends ViewCollection
                     scores[tag] = 1
                     total += 1
         average = @collection.length / total
-        console.log(average, @collection.length, total)
         for tag, score of scores
             model =
                 tag: tag
-                score: 1 + (score / average)
+                score: 1 + .3 * (score / average)
             view = new @view model
             @$el.prepend view.render().el
             @add view

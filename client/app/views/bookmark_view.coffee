@@ -63,6 +63,5 @@ module.exports = class BookmarkView extends View
                     modal.modal "hide"
                     @render()
                 "error": (a, b, c) =>
-                    console.log("err", a, b, c)
                     View.error "Server error occured, " +
                                "bookmark was not saved"
