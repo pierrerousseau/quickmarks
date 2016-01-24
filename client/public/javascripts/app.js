@@ -682,7 +682,7 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.addBookmarkFromFile = function(link, others) {
-    var $link, bookmark, description, next, title, url;
+    var $link, bookmark, description, next, tags, title, url;
     $link = $(link);
     if (!!$link.attr("href").indexOf("place") && !$link.attr("feedurl")) {
       url = $link.attr("href");
@@ -692,10 +692,14 @@ module.exports = AppView = (function(superClass) {
       if (next.is("dd")) {
         description = next.text();
       }
+      tags = [];
+      if ($link.attr("tags")) {
+        tags = $link.attr("tags").split(",");
+      }
       bookmark = new Bookmark({
         title: title,
         url: url,
-        tags: [],
+        tags: tags,
         description: description
       });
       return this.bookmarksView.collection.create(bookmark, {

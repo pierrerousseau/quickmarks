@@ -70,12 +70,15 @@ EXPORT_FOOTER = """
       </DL>
 """
 
-MakeLink = (name, link, date, tags) ->
+MakeLink = (name, link, date, tags, description) ->
     date = +date
     ret = "<DT><A HREF='#{link}' ADD_DATE='#{date}' LAST_MODIFIED='#{date}'"
     if tags?
         ret += " TAGS='#{tags}'"
-    ret += ">#{name}</A></DT>\n"
+    dd = ""
+    if description?
+        dd += "<DD>#{description}</DD>"
+    ret += ">#{name}</A></DT>" + dd + "\n"
     ret
 
 module.exports.export = (req, res) ->
@@ -91,7 +94,8 @@ module.exports.export = (req, res) ->
             link = b.url
             creation_date = new Date b.created
             tags = b.tags
-            exported += MakeLink name, link, creation_date, tags
+            description = b.description
+            exported += MakeLink name, link, creation_date, tags, description
 
         exported += EXPORT_FOOTER
         res.setHeader 'Content-disposition', 'attachment; filename=bookmarks.html'

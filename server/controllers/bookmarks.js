@@ -95,20 +95,24 @@ EXPORT_HEADER = "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n  <META HTTP-EQUIV=\"Conte
 
 EXPORT_FOOTER = "  </DL>\n</DL>";
 
-MakeLink = function(name, link, date, tags) {
-  var ret;
+MakeLink = function(name, link, date, tags, description) {
+  var dd, ret;
   date = +date;
   ret = "<DT><A HREF='" + link + "' ADD_DATE='" + date + "' LAST_MODIFIED='" + date + "'";
   if (tags != null) {
     ret += " TAGS='" + tags + "'";
   }
-  ret += ">" + name + "</A></DT>\n";
+  dd = "";
+  if (description != null) {
+    dd += "<DD>" + description + "</DD>";
+  }
+  ret += (">" + name + "</A></DT>") + dd + "\n";
   return ret;
 };
 
 module.exports["export"] = function(req, res) {
   return Bookmark.all(function(err, bookmarks) {
-    var b, creation_date, exported, link, name, tags, _i, _len;
+    var b, creation_date, description, exported, link, name, tags, _i, _len;
     if (err) {
       console.error(err);
       SendError(res, 'while retrieving data for export');
@@ -121,7 +125,8 @@ module.exports["export"] = function(req, res) {
       link = b.url;
       creation_date = new Date(b.created);
       tags = b.tags;
-      exported += MakeLink(name, link, creation_date, tags);
+      description = b.description;
+      exported += MakeLink(name, link, creation_date, tags, description);
     }
     exported += EXPORT_FOOTER;
     res.setHeader('Content-disposition', 'attachment; filename=bookmarks.html');

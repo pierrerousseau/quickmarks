@@ -114,11 +114,14 @@ module.exports = class AppView extends View
             next = $link.parents(":first").next()
             if next.is "dd"
                 description = next.text()
+            tags = []
+            if $link.attr "tags"
+               tags =  $link.attr("tags").split(",")
 
             bookmark = new Bookmark
                 title: title
                 url: url
-                tags: []
+                tags: tags
                 description: description
             @bookmarksView.collection.create bookmark,
                 success: =>
