@@ -47,6 +47,7 @@ module.exports = class BookmarkView extends View
         modal = $("#edit-modal")
         modal.modal "show"
 
+        form.unbind "submit"
         form.on "submit", (evt) =>
             evt.preventDefault()
 

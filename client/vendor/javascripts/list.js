@@ -57,7 +57,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
         this.list = null;
 
-        this.page = options.page || 200;
+        this.page = options.page || 2000;
         this.i = options.i || 1;
 
         init = {

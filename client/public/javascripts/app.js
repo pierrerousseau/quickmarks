@@ -849,6 +849,7 @@ module.exports = BookmarkView = (function(superClass) {
     $("#edit-tags").val(this.model.get("readableTags"));
     modal = $("#edit-modal");
     modal.modal("show");
+    form.unbind("submit");
     return form.on("submit", (function(_this) {
       return function(evt) {
         var newValues;
