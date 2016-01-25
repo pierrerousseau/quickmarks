@@ -1,6 +1,7 @@
 // nib is a powerful lib for stylus that provides cross-browser css3 mixins.
 @import 'nib'
 
+button-size = 3rem
 main-background = #41454d
 main-color = #c6c6c6
 button-background = #d4cfc7
@@ -24,7 +25,7 @@ list-hightlight-background = #f4f3f0
 list-hightlight-color = #ec4e1b
 
 body
-    background: list-background;
+    background: main-background;
     color: list-color;
     font-family: "Open Sans", sans-serif
 
@@ -33,15 +34,16 @@ body
     padding: 0
 
 #content
+    background: main-background;
     .btn
         font-weight: bolder
-        font-size: 1.5em
+        font-size: button-size
         text-shadow: none
         white-space: normal
         span
             margin-right: 1em
     input
-        height: 2em
+        height: auto
         font-size: 1.5em
         box-shadow: none
         border: none
@@ -50,7 +52,6 @@ body
     color: main-color
     background: main-background
 
-    font-size: 1.5em
     padding-top: 3em
     padding-bottom: 3em
     padding-left: 10%
@@ -60,27 +61,28 @@ body
     button
         background: button-background
         color: button-color
-        height: 2em
+        height: auto
         padding-left: .5em
         padding-right: .5em
     .add 
         text-align: right
         margin: auto
-        flex: 1
+        flex: 2
         margin-top: 0
     .or
         text-align: center
         margin: auto
-        flex: .5
+        flex: 1 
         margin-top: 1em
     .search
         margin: auto
-        flex: 1
+        flex: 3
         margin-top: 0
         input
             background: button-background
             color: button-color
-            height: 2em
+            height: auto
+            font-size: button-size
             padding-left: .5em
             padding-right: .5em
         .input-group-addon
@@ -90,7 +92,7 @@ body
             img
                 margin-left: .2em
                 opacity: .7
-                height: 2.5em
+                height: button-size
     .help-block
         text-align: center
     .transfer
@@ -98,6 +100,7 @@ body
         top: 0
         right: 0
         button 
+            box-shadow: none
             font-size: 1em
             padding: 0
             background: inherit
@@ -144,7 +147,7 @@ body
         text-align: center
         background: tags-background
         color: tags-color
-        width: 50%
+        width: 150px
         padding: .25em
         span
             margin-right: .25em
@@ -153,7 +156,7 @@ body
         display: none
 
 #tags
-    padding: .2em 20%
+    padding: .2em 10%
     min-height: 2em
     background: tags-background
     color: tags-color
@@ -175,10 +178,13 @@ body
     color: list-color
     display: none
 
- #bookmarks
-    margin: 1em
+#bookmarks
+    background: list-background;
+    color: list-color;
+    padding: 1em
     .list
         list-style: none
+        padding: 0
 
     .bookmark
         margin: 0 10%
