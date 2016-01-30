@@ -8,19 +8,19 @@
                     h2(class="modal-title") Add a new bookmark
                 form#bookmark-add(class="form-horizontal")
                     div(class="modal-body")
-                        div(class="form-group")
+                        div(class="form-group row")
                             label(for="add-link", class="col-xs-2  control-label") Link URL
                             div(class="col-xs-9")
                                 input#add-link(class="form-control", type="text", placeholder="http://cozy.io/")
-                        div(class="form-group")
+                        div(class="form-group row")
                             label(for="add-title", class="col-xs-2  control-label") Title
                             div(class="col-xs-9")
                                 input#add-title(class="form-control", type="text", placeholder="A short title for your bookmark")
-                        div(class="form-group")
+                        div(class="form-group row")
                             label(for="add-description", class="col-xs-2  control-label") Description
                             div(class="col-xs-9")
                                 textarea#add-description(class="form-control", placeholder="A more complete description of your bookmark")
-                        div(class="form-group")
+                        div(class="form-group row")
                             label(for="add-tags", class="col-xs-2  control-label") Tags
                             div(class="col-xs-9")
                                 input#add-tags(class="form-control", type="text", placeholder="free, news")
@@ -40,19 +40,19 @@
                     h2(class="modal-title") Edit the bookmark
                 form#bookmark-edit(class="form-horizontal")
                     div(class="modal-body")
-                        div(class="form-group")
+                        div(class="form-group row")
                             label(for="edit-link", class="col-xs-2  control-label") Link URL
                             div(class="col-xs-9")
                                 input#edit-link(class="form-control", type="text", placeholder="http://cozy.io/")
-                        div(class="form-group")
+                        div(class="form-group row")
                             label(for="edit-title", class="col-xs-2  control-label") Title
                             div(class="col-xs-9")
                                 input#edit-title(class="form-control", type="text", placeholder="A short title for your bookmark")
-                        div(class="form-group")
+                        div(class="form-group row")
                             label(for="edit-description", class="col-xs-2  control-label") Description
                             div(class="col-xs-9")
                                 textarea#edit-description(class="form-control", placeholder="A more complete description of your bookmark")
-                        div(class="form-group")
+                        div(class="form-group row")
                             label(for="edit-tags", class="col-xs-2  control-label") Tags
                             div(class="col-xs-9")
                                 input#edit-tags(class="form-control", type="text", placeholder="free, news")
@@ -83,8 +83,8 @@
         div(class="row")
             .add
                 button(class="btn btn-default add-bookmark", type="button", data-toggle="modal", data-target="#add-modal") 
-                    span(class="glyphicon glyphicon-plus")
-                    | Add a new bookmark
+                    span(class="glyphicon glyphicon-plus col-xs-11 col-md-1")
+                    div(class="add-bookmark-title hidden-xs col-md-10") Add a new bookmark
             .or or
             form.search
                 div(class="input-group")

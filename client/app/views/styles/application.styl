@@ -29,11 +29,15 @@ body
     color: list-color;
     font-family: "Open Sans", sans-serif
 
-.row
-    margin: 0
-    padding: 0
 
 #content
+    .modal
+        overflow: hidden
+    .row
+    .form-group
+        margin: 0
+        padding: 0
+
     background: main-background;
     .btn
         font-weight: bolder
@@ -252,3 +256,39 @@ body
                 margin: 0
                 &:hover
                     color: list-hightlight-color
+
+
+
+@media (max-width:1280px)
+    #header
+        padding-left: 2%
+        padding-right: 2%
+    #tags
+        padding: .2em 2%
+    #bookmarks
+        .bookmark
+            margin: 0 2%
+            margin: 0 2%
+            .actions
+                button
+                    height: 2.5em
+
+@media (max-width:580px)
+    #bookmarks
+        .bookmark
+            font-size: 1em
+            margin: 0
+            margin: 0
+            .infos
+                text-align: left
+            .actions
+                button
+                    height: 2.5em
+                    font-size: 1.5em
+                    background: button-background-invert
+                    color: button-color-invert
+                    border-radius: 0
+                    border: none
+                    span
+                        margin: 0
+                        padding: .75em
