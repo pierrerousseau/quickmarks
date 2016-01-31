@@ -20,9 +20,6 @@ body {
 #content {
   background: #41454d;
 }
-#content .modal {
-  overflow: hidden;
-}
 #content .row,
 #content .form-group {
   margin: 0;
@@ -82,6 +79,13 @@ body {
   flex: 2;
   margin-top: 0;
 }
+#header .add img {
+  width: 2em;
+}
+#header .add div {
+  display: inline-block;
+  vertical-align: middle;
+}
 #header .or {
   text-align: center;
   margin: auto;
@@ -126,9 +130,6 @@ body {
 }
 #header .search .input-group-addon img {
   margin-left: 0.2em;
-  opacity: 0.7;
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
-  filter: alpha(opacity=70);
   height: 3rem;
 }
 #header .help-block {
@@ -147,6 +148,23 @@ body {
   background: inherit;
   border: none;
   color: #d4cfc7;
+}
+#add-modal .close,
+#edit-modal .close,
+#transfer-modal .close {
+  opacity: 0.5;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+  filter: alpha(opacity=50);
+  margin: 0;
+  height: 3em;
+  text-align: right;
+}
+#add-modal .close:hover,
+#edit-modal .close:hover,
+#transfer-modal .close:hover {
+  opacity: 0.7;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=70);
+  filter: alpha(opacity=70);
 }
 #add-modal .modal-content,
 #edit-modal .modal-content,
@@ -180,10 +198,24 @@ body {
 #transfer-modal .modal-content .modal-footer span {
   margin-right: 0.25em;
 }
+#add-modal .modal-content .modal-footer .cancel,
+#edit-modal .modal-content .modal-footer .cancel,
+#transfer-modal .modal-content .modal-footer .cancel {
+  font-size: 1em;
+  color: inherit;
+  background: inherit;
+  border: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  text-decoration: underline;
+}
 #add-modal .import-file,
 #edit-modal .import-file,
 #transfer-modal .import-file {
   display: none;
+}
+#transfer-modal button {
+  margin: 1em;
 }
 #tags-toggle {
   color: #c6c6c6;
@@ -199,13 +231,20 @@ body {
   width: 150px;
   padding: 0.25em;
 }
-#tags-toggle .tags-show span,
-#tags-toggle .tags-hide span {
-  margin-right: 0.25em;
-  vertical-align: sub;
+#tags-toggle .tags-show img,
+#tags-toggle .tags-hide img {
+  height: 1em;
+  margin: 0.1em;
 }
 #tags-toggle .tags-hide {
   display: none;
+}
+#tags-toggle .tags-hide img {
+  -webkit-transform: scaleY(-1);
+  -moz-transform: scaleY(-1);
+  -o-transform: scaleY(-1);
+  -ms-transform: scaleY(-1);
+  transform: scaleY(-1);
 }
 #tags {
   padding: 0.2em 10%;
@@ -329,10 +368,22 @@ body {
 #bookmarks .bookmark .actions button:hover {
   color: #ec4e1b;
 }
+#bookmarks .bookmark .actions button img {
+  height: 2em;
+}
+#bookmarks .bookmark .actions button img,
+#bookmarks .bookmark .actions button svg,
+#bookmarks .bookmark .actions button path,
+#bookmarks .bookmark .actions button img path {
+  fill: #f00;
+}
 @media (max-width:1280px) {
   #header {
     padding-left: 2%;
     padding-right: 2%;
+  }
+  #header .add .add-bookmark-title {
+    display: none;
   }
   #tags {
     padding: 0.2em 2%;

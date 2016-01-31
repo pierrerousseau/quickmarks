@@ -4,7 +4,8 @@
             div(class="modal-content")
                 div(class="modal-header")
                     button(type="button", class="close", data-dismiss="modal", aria-label="Close")
-                        span(aria-hidden="true") &times;
+                        span(aria-hidden="true") 
+                            img.close(src="icons/close.svg", alt="close") 
                     h2(class="modal-title") Add a new bookmark
                 form#bookmark-add(class="form-horizontal")
                     div(class="modal-body")
@@ -26,17 +27,16 @@
                                 input#add-tags(class="form-control", type="text", placeholder="free, news")
                                 p(class="help-block") you can use multiple tags, use comma to split them
                     div(class="modal-footer")
-                        button(type="button", class="btn btn-default", data-dismiss="modal") Cancel
-                        button(type="submit", class="btn btn-primary") 
-                            span(class="glyphicon glyphicon-plus") 
-                            | Add
+                        button(type="button", class="btn btn-default cancel", data-dismiss="modal") Cancel
+                        button(type="submit", class="btn btn-primary save") Save
 
     #edit-modal(class="modal fade", tabindex="-1", role="dialog")
         div(class="modal-dialog")
             div(class="modal-content")
                 div(class="modal-header")
                     button(type="button", class="close", data-dismiss="modal", aria-label="Close")
-                        span(aria-hidden="true") &times;
+                        span(aria-hidden="true") 
+                            img.close(src="icons/close.svg", alt="close") 
                     h2(class="modal-title") Edit the bookmark
                 form#bookmark-edit(class="form-horizontal")
                     div(class="modal-body")
@@ -58,33 +58,30 @@
                                 input#edit-tags(class="form-control", type="text", placeholder="free, news")
                                 p(class="help-block") you can use multiple tags, use comma to split them
                     div(class="modal-footer")
-                        button(type="button", class="btn btn-default", data-dismiss="modal") Cancel
-                        button(type="submit", class="btn btn-primary") 
-                            span(class="glyphicon glyphicon-plus") 
-                            | Save
+                        button(type="button", class="btn btn-default cancel", data-dismiss="modal") Cancel
+                        button(type="submit", class="btn btn-primary save") Save
 
     #transfer-modal(class="modal fade", tabindex="-1", role="dialog")
         div(class="modal-dialog")
             div(class="modal-content")
                 div(class="modal-header")
                     button(type="button", class="close", data-dismiss="modal", aria-label="Close")
-                        span(aria-hidden="true") &times;
+                        span(aria-hidden="true") 
+                            img.close(src="icons/close.svg", alt="close") 
                     h2(class="modal-title") Import/Export bookmarks
                     div(class="modal-body")
                         input(class="import-file", type="file", name="import-file")
-                        .import
-                            button(type="button", class="btn btn-primary") Import
-                            .done
-                            .failed
-                        .export
-                            button(type="button", class="btn btn-primary") Export
+                        button.export(type="button", class="btn btn-primary") Export
+                        button.import(type="button", class="btn btn-primary") Import
+                        .done
+                        .failed
 
     #header
         div(class="row")
             .add
                 button(class="btn btn-default add-bookmark", type="button", data-toggle="modal", data-target="#add-modal") 
-                    span(class="glyphicon glyphicon-plus col-xs-11 col-md-1")
-                    div(class="add-bookmark-title hidden-xs col-md-10") Add a new bookmark
+                    img(src="icons/add.svg", alt="add")
+                    div(class="add-bookmark-title") Add a new bookmark
             .or or
             form.search
                 div(class="input-group")
@@ -103,10 +100,10 @@
     #tags-toggle(class="row")
         .buttons(class="col-xs-offset-1 col-sm-offset-9")
             .tags-show
-                span(class="glyphicon glyphicon-chevron-down")
+                img(src="icons/hide-show.svg", alt="show")
                 | show tags
             .tags-hide
-                span(class="glyphicon glyphicon-chevron-up")
+                img(src="icons/hide-show.svg", alt="show")
                 | hide tags
     #tags
 

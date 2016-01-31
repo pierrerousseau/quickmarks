@@ -31,8 +31,6 @@ body
 
 
 #content
-    .modal
-        overflow: hidden
     .row
     .form-group
         margin: 0
@@ -73,6 +71,11 @@ body
         margin: auto
         flex: 2
         margin-top: 0
+        img
+            width: 2em
+        div
+            display: inline-block
+            vertical-align: middle
     .or
         text-align: center
         margin: auto
@@ -95,7 +98,6 @@ body
             cursor: pointer
             img
                 margin-left: .2em
-                opacity: .7
                 height: button-size
     .help-block
         text-align: center
@@ -114,6 +116,13 @@ body
 #add-modal
 #edit-modal
 #transfer-modal
+    .close
+        opacity: .5
+        &:hover
+            opacity: .7
+        margin: 0
+        height: 3em
+        text-align: right
     .modal-content
         background: modal-background
         color: modal-color
@@ -128,7 +137,6 @@ body
                 background: button-background-invert
                 color: button-color-invert
                 margin-top: 1em
-
         .modal-footer
             button
                 border: 0
@@ -136,9 +144,20 @@ body
                 color: button-color-invert
             span
                 margin-right: .25em
+            .cancel
+                font-size: 1em
+                color: inherit
+                background: inherit
+                border: none
+                box-shadow: none
+                text-decoration: underline
+
     .import-file
         display: none
     
+#transfer-modal
+    button 
+        margin: 1em
 
 #tags-toggle
     color: main-color
@@ -153,11 +172,13 @@ body
         color: tags-color
         width: 150px
         padding: .25em
-        span
-            margin-right: .25em
-            vertical-align: sub
+        img
+            height: 1em
+            margin: .1em
     .tags-hide
         display: none
+        img
+            transform: scaleY(-1);
 
 #tags
     padding: .2em 10%
@@ -256,6 +277,14 @@ body
                 margin: 0
                 &:hover
                     color: list-hightlight-color
+                img
+                    height: 2em
+                img
+                svg
+                path
+                img path 
+                    fill: red
+
 
 
 
@@ -263,6 +292,8 @@ body
     #header
         padding-left: 2%
         padding-right: 2%
+        .add .add-bookmark-title
+            display: none
     #tags
         padding: .2em 2%
     #bookmarks
