@@ -14,19 +14,14 @@ Store all your bookmarks here !
 
 # Changelog
 
-* v0.9.7
+* v1.0
+  * new design
   * be ready for the new data-system
-* v0.9.6
   * open links in a new window
-* v0.9.5
   * update vendor librairies versions + review of UI
-* v0.9.4
   * add an export button
-* v0.9.3
   * config config
-* v0.9.2
   * change default port (all apps with same port may disturb cozy)
-* v0.9.1
   * using americano instead of compound
 * v0.9
   * import from firefox/chrome html export
