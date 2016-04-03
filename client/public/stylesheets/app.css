@@ -61,7 +61,7 @@ body {
   background: #d4cfc7;
   color: #616164;
   height: auto;
-  padding-left: 0.5em;
+  padding-left: 0em;
   padding-right: 0.5em;
 }
 #header .add {
@@ -149,6 +149,11 @@ body {
   border: none;
   color: #d4cfc7;
 }
+#add-modal .form-group,
+#edit-modal .form-group,
+#transfer-modal .form-group {
+  margin: 1em 0;
+}
 #add-modal .close,
 #edit-modal .close,
 #transfer-modal .close {
@@ -229,12 +234,13 @@ body {
   background: #616167;
   color: #d4cfc7;
   width: 150px;
-  padding: 0.25em;
+  padding: 0.25em 0.25em 0.25em 0;
 }
 #tags-toggle .tags-show img,
 #tags-toggle .tags-hide img {
   height: 1em;
   margin: 0.1em;
+  vertical-align: sub;
 }
 #tags-toggle .tags-hide {
   display: none;
@@ -381,6 +387,9 @@ body {
   #header {
     padding-left: 2%;
     padding-right: 2%;
+  }
+  #header button {
+    padding-left: 0.5em;
   }
   #header .add .add-bookmark-title {
     display: none;

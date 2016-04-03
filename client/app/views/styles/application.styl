@@ -64,7 +64,7 @@ body
         background: button-background
         color: button-color
         height: auto
-        padding-left: .5em
+        padding-left: 0em
         padding-right: .5em
     .add 
         text-align: right
@@ -116,6 +116,8 @@ body
 #add-modal
 #edit-modal
 #transfer-modal
+    .form-group
+        margin: 1em 0
     .close
         opacity: .5
         &:hover
@@ -171,10 +173,11 @@ body
         background: tags-background
         color: tags-color
         width: 150px
-        padding: .25em
+        padding: .25em .25em .25em 0
         img
             height: 1em
             margin: .1em
+            vertical-align: sub
     .tags-hide
         display: none
         img
@@ -292,6 +295,8 @@ body
     #header
         padding-left: 2%
         padding-right: 2%
+        button 
+            padding-left: 0.5em
         .add .add-bookmark-title
             display: none
     #tags
