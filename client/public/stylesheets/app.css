@@ -135,6 +135,17 @@ body {
 #header .help-block {
   text-align: center;
 }
+#header .quickmarklet {
+  position: absolute;
+  top: 0;
+  right: 3em;
+}
+#header .quickmarklet button {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  font-size: 1em;
+  padding: 0.25em;
+}
 #header .transfer {
   position: absolute;
   top: 0;
@@ -403,6 +414,10 @@ body {
   }
   #bookmarks .bookmark .actions button {
     height: 2.5em;
+  }
+  .transfer,
+  .quickmarklet {
+    display: none;
   }
 }
 @media (max-width:580px) {

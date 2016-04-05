@@ -20,20 +20,34 @@ module.exports = class AppView extends View
         "click .export": "export"
 
     template: ->
-        require "./templates/home"
+        template = require "./templates/home"
+        infos =
+            "mainUrl": window.location.href
+        template infos
 
     initialize: () ->
         @router = CozyApp.Routers.AppRouter = new AppRouter()
         @loader = $("#loader")
-
-        # @router.on "route:quickmarklet", (title, url) ->
-        #     console.log("let", title, url)
 
     startLoader: ->
         @loader.show("slow")
 
     stopLoader: ->
         @loader.hide()
+
+    isQuickmarklet: ->
+        window.location.href.search("quickmarklet") > 0
+
+    parseArgs: ->
+        path  = window.location.href.split("?")[1].split("&")
+        args = 
+            "url": decodeURIComponent(path[1].split("=")[1])
+            "title": decodeURIComponent(path[2].split("=")[1])
+
+    setQuickmarletValues: ->
+        args = @parseArgs()
+        $("#add-link").val(args["url"])
+        $("#add-title").val(args["title"])
 
     afterRender: ->
         @startLoader()
@@ -54,7 +68,9 @@ module.exports = class AppView extends View
         @tagsView.collection.fetch
             success: =>
                 @tagsView.renderAll()
-
+        if @isQuickmarklet()
+            $("#add-modal").modal("show")
+            @setQuickmarletValues()
 
     showAddForm: (evt) ->
         $("#add-link").focus()

@@ -577,7 +577,12 @@ module.exports = AppView = (function(superClass) {
   };
 
   AppView.prototype.template = function() {
-    return require("./templates/home");
+    var infos, template;
+    template = require("./templates/home");
+    infos = {
+      "mainUrl": window.location.href
+    };
+    return template(infos);
   };
 
   AppView.prototype.initialize = function() {
@@ -591,6 +596,26 @@ module.exports = AppView = (function(superClass) {
 
   AppView.prototype.stopLoader = function() {
     return this.loader.hide();
+  };
+
+  AppView.prototype.isQuickmarklet = function() {
+    return window.location.href.search("quickmarklet") > 0;
+  };
+
+  AppView.prototype.parseArgs = function() {
+    var args, path;
+    path = window.location.href.split("?")[1].split("&");
+    return args = {
+      "url": decodeURIComponent(path[1].split("=")[1]),
+      "title": decodeURIComponent(path[2].split("=")[1])
+    };
+  };
+
+  AppView.prototype.setQuickmarletValues = function() {
+    var args;
+    args = this.parseArgs();
+    $("#add-link").val(args["url"]);
+    return $("#add-title").val(args["title"]);
   };
 
   AppView.prototype.afterRender = function() {
@@ -609,13 +634,17 @@ module.exports = AppView = (function(superClass) {
       })(this)
     });
     this.tagsView = new TagsView();
-    return this.tagsView.collection.fetch({
+    this.tagsView.collection.fetch({
       success: (function(_this) {
         return function() {
           return _this.tagsView.renderAll();
         };
       })(this)
     });
+    if (this.isQuickmarklet()) {
+      $("#add-modal").modal("show");
+      return this.setQuickmarletValues();
+    }
   };
 
   AppView.prototype.showAddForm = function(evt) {
@@ -1063,7 +1092,9 @@ attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow |
 var buf = [];
 with (locals || {}) {
 var interp;
-buf.push('<div id="content"><div id="add-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"> <img src="icons/close.svg" alt="close" class="close"/></span></button><h2 class="modal-title">Add a new bookmark</h2></div><form id="bookmark-add" class="form-horizontal"><div class="modal-body"><div class="form-group row"><label for="add-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="add-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group row"><label for="add-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="add-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group row"><label for="add-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="add-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group row"><label for="add-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="add-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default cancel">Cancel</button><button type="submit" class="btn btn-primary save">Save</button></div></form></div></div></div><div id="edit-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"> <img src="icons/close.svg" alt="close" class="close"/></span></button><h2 class="modal-title">Edit the bookmark</h2></div><form id="bookmark-edit" class="form-horizontal"><div class="modal-body"><div class="form-group row"><label for="edit-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="edit-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group row"><label for="edit-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="edit-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group row"><label for="edit-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="edit-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group row"><label for="edit-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="edit-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default cancel">Cancel</button><button type="submit" class="btn btn-primary save">Save</button></div></form></div></div></div><div id="transfer-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"> <img src="icons/close.svg" alt="close" class="close"/></span></button><h2 class="modal-title">Import/Export bookmarks</h2><div class="modal-body"><input type="file" name="import-file" class="import-file"/><button type="button" class="export btn btn-primary">Export</button><button type="button" class="import btn btn-primary">Import</button><div class="done"></div><div class="failed"></div></div></div></div></div></div><div id="header"><div class="row"><div class="add"><button type="button" data-toggle="modal" data-target="#add-modal" class="btn btn-default add-bookmark"> <img src="icons/add.svg" alt="add"/><div class="add-bookmark-title">Add a new bookmark</div></button></div><div class="or">or</div><form class="search"><div class="input-group"><input type="text" placeholder="Search for a bookmark" class="form-control"/><div class="input-group-addon"><img src="icons/search.svg" alt="search"/></div></div><p class="help-block">Type a keyword, we will search for it in your saved bookmarks </p></form><div class="transfer"><button title="import/export bookmarks" type="button" data-toggle="modal" data-target="#transfer-modal" class="btn btn-default transfer-bookmarks"> <span class="glyphicon glyphicon-transfer"></span></button></div></div></div><div id="tags-toggle" class="row"><div class="buttons col-xs-offset-1 col-sm-offset-9"><div class="tags-show"><img src="icons/hide-show.svg" alt="show"/>show tags</div><div class="tags-hide"><img src="icons/hide-show.svg" alt="show"/>hide tags</div></div></div><div id="tags"></div><div id="loader" class="loader-inner ball-pulse"><p>Loading bookmarks, please wait ...</p></div><div id="bookmarks"><ul class="list"></ul></div></div>');
+buf.push('<div id="content"><div id="add-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"> <img src="icons/close.svg" alt="close" class="close"/></span></button><h2 class="modal-title">Add a new bookmark</h2></div><form id="bookmark-add" class="form-horizontal"><div class="modal-body"><div class="form-group row"><label for="add-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="add-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group row"><label for="add-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="add-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group row"><label for="add-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="add-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group row"><label for="add-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="add-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default cancel">Cancel</button><button type="submit" class="btn btn-primary save">Save</button></div></form></div></div></div><div id="edit-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"> <img src="icons/close.svg" alt="close" class="close"/></span></button><h2 class="modal-title">Edit the bookmark</h2></div><form id="bookmark-edit" class="form-horizontal"><div class="modal-body"><div class="form-group row"><label for="edit-link" class="col-xs-2  control-label">Link URL</label><div class="col-xs-9"><input id="edit-link" type="text" placeholder="http://cozy.io/" class="form-control"/></div></div><div class="form-group row"><label for="edit-title" class="col-xs-2  control-label">Title</label><div class="col-xs-9"><input id="edit-title" type="text" placeholder="A short title for your bookmark" class="form-control"/></div></div><div class="form-group row"><label for="edit-description" class="col-xs-2  control-label">Description</label><div class="col-xs-9"><textarea id="edit-description" placeholder="A more complete description of your bookmark" class="form-control"></textarea></div></div><div class="form-group row"><label for="edit-tags" class="col-xs-2  control-label">Tags</label><div class="col-xs-9"><input id="edit-tags" type="text" placeholder="free, news" class="form-control"/><p class="help-block">you can use multiple tags, use comma to split them</p></div></div></div><div class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default cancel">Cancel</button><button type="submit" class="btn btn-primary save">Save</button></div></form></div></div></div><div id="transfer-modal" tabindex="-1" role="dialog" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"> <img src="icons/close.svg" alt="close" class="close"/></span></button><h2 class="modal-title">Import/Export bookmarks</h2><div class="modal-body"><input type="file" name="import-file" class="import-file"/><button type="button" class="export btn btn-primary">Export</button><button type="button" class="import btn btn-primary">Import</button><div class="done"></div><div class="failed"></div></div></div></div></div></div><div id="header"><div class="row"><div class="add"><button type="button" data-toggle="modal" data-target="#add-modal" class="btn btn-default add-bookmark"> <img src="icons/add.svg" alt="add"/><div class="add-bookmark-title">Add a new bookmark</div></button></div><div class="or">or</div><form class="search"><div class="input-group"><input type="text" placeholder="Search for a bookmark" class="form-control"/><div class="input-group-addon"><img src="icons/search.svg" alt="search"/></div></div><p class="help-block">Type a keyword, we will search for it in your saved bookmarks </p></form><div class="transfer"><button title="import/export bookmarks" type="button" data-toggle="modal" data-target="#transfer-modal" class="btn btn-default transfer-bookmarks"> <span class="glyphicon glyphicon-transfer"></span></button></div><div class="quickmarklet"><a');
+buf.push(attrs({ 'href':('javascript:(function(){var a=window,b=document,c=encodeURIComponent,d=a.open("' + (mainUrl) + '?quickmarklet&url="+c(b.location)+"&title="+c(b.title),"qck_popup","left="+((a.screenX||a.screenLeft)+64)+",top="+((a.screenY||a.screenTop)+64)+",width=800px,height=600px,resizable=1,alwaysRaised=1");a.setTimeout(function(){d.focus(),e()},300)})();') }, {"href":true}));
+buf.push('><button type="button" title="Drag and drop me to your favorites toolbar to get a bookmarklet!" class="btn btn-default add-quickmarklet">cozy-quickmarklet</button></a></div></div></div><div id="tags-toggle" class="row"><div class="buttons col-xs-offset-1 col-sm-offset-9"><div class="tags-show"><img src="icons/hide-show.svg" alt="show"/>show tags</div><div class="tags-hide"><img src="icons/hide-show.svg" alt="show"/>hide tags</div></div></div><div id="tags"></div><div id="loader" class="loader-inner ball-pulse"><p>Loading bookmarks, please wait ...</p></div><div id="bookmarks"><ul class="list"></ul></div></div>');
 }
 return buf.join("");
 };
