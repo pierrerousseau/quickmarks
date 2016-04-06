@@ -228,7 +228,6 @@ OTHER DEALINGS IN THE SOFTWARE.
         };
 
         this.search = function (searchString, columns) {
-            console.log("oko", searchString, columns)
             self.i = 1; // Reset paging
             var matching = [],
                 found,
@@ -238,7 +237,7 @@ OTHER DEALINGS IN THE SOFTWARE.
                 is,
                 isLength,
                 columns = (columns === undefined) ?
-                        self.items[0].values() :
+                        (self.items[0] ? self.items[0].values() : []) :
                         columns,
                 searchString = (searchString === undefined) ?
                         "" :
@@ -266,7 +265,6 @@ OTHER DEALINGS IN THE SOFTWARE.
                     found = false;
                     item = is[k];
                     values = item.values();
-                    console.log(columns)
 
                     for (j in columns) {
                         if (values.hasOwnProperty(j) && columns[j] !== null) {
