@@ -140,7 +140,9 @@ body {
   top: 0;
   right: 3em;
 }
-#header .quickmarklet button {
+#header .quickmarklet a {
+  background: #d4cfc7;
+  color: #616164;
   -webkit-box-shadow: none;
   box-shadow: none;
   font-size: 1em;

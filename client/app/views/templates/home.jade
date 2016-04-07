@@ -97,8 +97,10 @@
                        data-target="#transfer-modal") 
                     span(class="glyphicon glyphicon-transfer")
             .quickmarklet
-                a(href='javascript:(function(){var a=window,b=document,c=encodeURIComponent,d=a.open("#{mainUrl}?quickmarklet&url="+c(b.location)+"&title="+c(b.title),"qck_popup","left="+((a.screenX||a.screenLeft)+64)+",top="+((a.screenY||a.screenTop)+64)+",width=800px,height=600px,resizable=1,alwaysRaised=1");a.setTimeout(function(){d.focus(),e()},300)})();')
-                    button(class="btn btn-default add-quickmarklet", type="button", title="Drag and drop me to your favorites toolbar to get a bookmarklet!") cozy-quickmarklet
+                a(href='javascript:(function(){var a=window,b=document,c=encodeURIComponent,d=a.open("#{mainUrl}?quickmarklet&url="+c(b.location)+"&title="+c(b.title),"qck_popup","left="+((a.screenX||a.screenLeft)+64)+",top="+((a.screenY||a.screenTop)+64)+",width=720,height=540,resizable=1,alwaysRaised=1");a.setTimeout(function(){d.focus()},300)})();',
+                class="btn btn-default add-quickmarklet",
+                title="Drag and drop me to your favorites toolbar to get a bookmarklet!",
+                ) cozy-quickmarklet
 
     #tags-toggle(class="row")
         .buttons(class="col-xs-offset-1 col-sm-offset-9")
